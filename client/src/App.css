@@ -1,0 +1,31 @@
+/* ---- fonts ---- */
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+/* ---- x fonts x ---- */
+
+/* Variables */
+:root {
+  --arc: 'Archivo Black', sans-serif;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  color: #fff;
+}
+
+hr {
+  color: #fff;
+}
+
+body {
+  background: url(./images/background.png);
+  /* background: url(./images/bg4.jfif); */
+  /* background-color: rgba(0, 0, 0, 0.8); */
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  backdrop-filter: blur(6px);
+  /* display: block;
+  margin: 0 auto;
+  max-width: 100%; */
+}
