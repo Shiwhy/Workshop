@@ -1,0 +1,134 @@
+
+
+.home-page {
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
+  font-weight: 500;
+}
+
+.first-page {
+  font-family: var(--arc);
+  /* color: #fff; */
+  /* border: 1px solid #fff; */
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 25px 25px 25px 25px;
+  width: 100%;
+}
+
+.main-heading {
+  background: transparent;
+  font-size: 10vw;
+  background: -webkit-linear-gradient(315deg, #e9bcb7 0%, #29524a 74%);
+  /* background: -webkit-linear-gradient(315deg, #e9bcb7, #9c9291); */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fade-out 3s;
+}
+@keyframes fade-out {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.second-page {
+  color: #fff;
+  position: relative;
+}
+
+.second-page h1 {
+  width: 100%;
+  
+}
+.second-page h1::after {
+  content: '';
+  position: relative;
+  width: 10%;
+  height: 3px;
+  background-color: #00dfc4;
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+}
+
+.first-image,
+.second-image {
+  margin: 40px 0 0 0;
+}
+
+.homeMechanic,
+.homeMechanic2 {
+  border-radius: 15px;
+  width: 40vw;
+}
+
+.second-page-text {
+  color: #fff;
+  text-align: justify;
+}
+
+.down {
+  margin: 50px 0 0 0;
+}
+
+.services {
+  color: #fff;
+  cursor: pointer;
+  text-align: center;
+  font-size: 40px;
+  margin: 0 0 0 5vw;
+  /* border: 1px solid #d62976; */
+  /* border-radius: 25px; */
+  /* background-color: #d62976; */
+}
+.service-title {
+  font-size: 30px;
+  /* font-weight: 400; */
+}
+.service-box {
+  transition: 0.3s ease;
+  width: 20vw;
+}
+
+.service-box:hover {
+  background-color: #00dfc4;
+  color: #000;
+  border-radius: 65px;
+}
+
+
+/* ---- Media Queries ---- */
+
+@media (max-width: 1200px) {
+  .second-page-text {
+    font-size: 1.3vw;
+  }
+  
+  .homeMechanic2 {
+    height: 26vw;
+  }
+  
+  .second-page h1 {
+    font-size: 2.8vw;
+  }
+
+  .service-box {
+    font-size: 3vw;
+    margin: 1vw;
+    padding: 1vw;
+  }
+
+  .service-box .service-title{
+    font-size: 3vw;
+  }
+
+  
+}
+/* ---- x Media Queries x ---- */
