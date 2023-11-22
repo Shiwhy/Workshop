@@ -1,243 +1,206 @@
 
-const express = require('express')
-const { ConnectionPool }  = require('mssql');
+const express = require('express');
+const { ConnectionPool } = require('mssql');
 const app = express();
-const cors = require('cors')
 const port = 5000;
+const cors = require('cors');
 
-app.use(cors());
+app.use(cors())
 
 const config = {
-  user: 'workshop',
-  password: 'workshop',
-  server: 'DESKTOP-BJT7PNS',
+  user: 'meet',
+  password: 'meet',
+  server: 'DESKTOP-F4QVLAC\\SQLEXPRESS',
   database: 'workshop_system',
   options: {
-    encrypt: false
-  }
-}
+    encrypt: false,
+    trustedConnection: true,
+    trustServerCertificate: true,
+  },
+};
+
 const pool = new ConnectionPool(config);
-
 pool.connect().then(() => {
-  console.log('Connected to database');
-}).catch ((err) => {
-  console.log('Error connecting DB', err)
+  console.log('Connected to SQL Server database');
+}).catch((err) => {
+  console.error('Error connecting to SQL Server:', err);
 });
 
-// Customer
-app.get('/customer', async(req, res) => {
-  try {
-    const result = await pool.request().query('Select * from customer')
+// ------------------------------ API -----------------------------------------------------
+
+
+// Vehicle //
+app.get('/vehicle', async (req, res) => {
+  try{
+    const result = await pool.request().query('select * from vehicle');
     res.json(result.recordset)
-  } 
-  catch(err) {
-    console.log('Error in fetching', err);
+  } catch(err){
+    console.log('error fetching data ',err)
   }
 });
 
-app.get('/customerStatus', async(req, res) => {
-  try {
-    const result = await pool.request().query('select * from customer_status')
+app.get('/vehicle/count', async (req, res) => {
+  try{
+    const result = await pool.request().query('select count(*) as count from vehicle');
     res.json(result.recordset)
-  } 
-  catch (err) {
-    console.log("Error in fetching", err)
+  }catch(err){
+    console.log('error fetching data',err)
   }
 });
 
-app.get('/countCustomer', async(req, res) => {
-  try {
+app.get('/vehicle/pending/work', async (req, res) => {
+  try{
+    const result = await pool.request().query('select count(*) as pendingWork from vehicle where vehicle_status = 4;')
+    res.json(result.recordset) 
+  }catch(err){
+    console.log('error fetching data',err)
+  }
+})
+
+app.get('/vehicle/pending/delivery', async (req, res) => {
+  try{
+    const result = await pool.request().query('select count(*) as pendingDelivery from vehicle where vehicle_status = 1')
+    res.json(result.recordset)
+  }catch(err){
+    console.log('error fetching data',err)
+  }
+})
+
+
+// customer //
+app.get('/customer', async (req, res) => {
+  try{
+    const result = await pool.request().query('select * from customer');
+    res.json(result.recordset)
+  } catch (err){
+    console.log('error fetching data ',err)
+  }
+});
+
+app.get('/customer/count', async(req,res) => {
+  try{
     const result = await pool.request().query('select count(*) as count from customer')
     res.json(result.recordset)
-  } 
-  catch (err) {
-    console.log("Error in fetching", err)
+  } catch(err) {
+    console.log('error fetching data ',err)
   }
 });
 
 
-// Vehicle
-app.get('/vehicle', async(req, res) => {
-  try {
-    const result = await pool.request().query('Select * from vehicle')
-    res.json(result.recordset)
-  } catch (err) {
-    console.log("Error in fetching ", err)
-  }
-});
-
-app.get('/vehicleStatus', async(req, res) => {
-  try {
-    const result = await pool.request().query('Select * from vehicle_status')
-    res.json(result.recordset)
-  } catch (err) {
-    console.log("Error in fetching ", err)
-  }
-});
-
-app.get('/vehicleCompany', async(req, res) => {
-  try {
-    const result = await pool.request().query('Select * from vehicle_company')
-    res.json(result.recordset)
-  } catch (err) {
-    console.log("Error in fetching ", err)
-  }
-});
-
-app.get('/countVehicle', async(req, res) => {
-  try {
-    const result = await pool.request().query('Select count(*) as count from vehicle')
-    res.json(result.recordset)
-  } catch (err) {
-    console.log("Error in fetching ", err)
-  }
-});
-
-
-// Employee
-app.get('/employee', async(req, res) => {
+// employee //
+app.get('/employee', async (req, res) => {
   try {
     const result = await pool.request().query('select * from employee')
     res.json(result.recordset)
   } catch (err) {
-    console.log("Error in fetching ", err)
+    console.log('error fetching data ', err)
+    
   }
-});
+})
 
-app.get('/countEmployee', async(req, res) => {
-  try {
+app.get('/employee/count', async(req,res) => {
+  try{
     const result = await pool.request().query('select count(*) as count from employee')
     res.json(result.recordset)
+  } catch(err) {
+    console.log('error fetching data ',err)
+  }
+});
+
+
+// Stock //
+app.get('/parts', async (req, res) => {
+  try{
+    const result = await pool.request().query('select * from parts')
+    res.json(result.recordset)
+  } catch(err) {
+    console.log('error fetching data ',err)
+  }
+});
+
+app.get('/parts/totalStock', async (req, res) => {
+  try{
+    const result = await pool.request().query('select sum(units) as totalStock from parts')
+    res.json(result.recordset)
+  } catch(err) {
+    console.log('error fetching data ',err)
+  }
+});
+
+
+// jobcard //
+app.get('/jobcard', async (req, res) => {
+  try{
+    const result = await pool.request().query('select * from jobcard')
+    res.json(result.recordset)
+  } catch(err) {
+    console.log('error fetching data ',err)
+  }
+});
+
+app.get('/jobcard/count', async (req, res) => {
+  try {
+    const result = await pool.request().query('select count(*) as count from jobcard')
+    res.json(result.recordset)
+  }catch(err) {
+    console.log('error fetching data ',err)
+  }
+});
+
+
+// payment //
+app.get('/payment', async (req, res) => {
+  try{
+    const result = await pool.request().query('select * from payment')
+    res.json(result.recordset)
+  } catch(err) {
+    console.log('error fetching data ',err)
+  }
+});
+
+app.get('/payment/pending', async (req, res) => {
+  try {
+    const result = await pool.request().query('select count(*) as pendingPayment from payment where payment_status = 2;')
+    res.json(result.recordset)
+  }catch(err) {
+    console.log('errror fetching data ',err)
+  }
+});
+
+
+// feedback //
+app.get('/feedback', async (req, res) => {
+  try{
+    const result = await pool.request().query('select * from feedback')
+    res.json(result.recordset)
+  } catch(err) {
+    console.log('error fetching data ',err)
+  }
+});
+
+app.get('/feedback/count', async (req, res) => {
+  try {
+    const result = await pool.request().query('select count(*) as count from feedback')
+    res.json(result.recordset)
   } catch (err) {
-    console.log("Error in fetching ", err)
+    console.log('error fetching data ', err)    
   }
-});
-
-// Jobcard
-app.get('/jobcard', async(req, res) => {
-  try {
-    const result = await pool.request().query('Select * from jobcard')
-    res.json(result.recordset)
-  } 
-  catch (err) {
-    console.log("Error in fetching ", err)
-  }
-});
-
-app.get('/jobcardStatus', async(req, res) => {
-  try {
-    const result = await pool.request().query('Select * from jobcard_status')
-    res.json(result.recordset)
-  } catch (err) {
-    console.log("Error in fetching ", err)
-  }
-});
-
-
-// Fuel
-app.get('/fuel', async(req, res) => {
-  try {
-    const result = await pool.request().query('select * from fuel')
-    res.json(result.recordset)
-  }
-  catch(err) {
-    console.log("Error in fetching ", err)
-  }
-});
-
-
-// Complains
-app.get('/complains', async(req, res) => {
-  try {
-    const result = await pool.request().query('SELECT * FROM complains')
-    res.json(result.recordset);
-  }
-  catch(err){
-    console.log("Error in fetching", err)
-  }
-});
-
-app.get('/complainStatus', async(req, res) => {
-  try {
-    const result = await pool.request().query('Select * from complain_status')
-    res.json(result.recordset)
-  }
-  catch(err) {
-    console.log("Error in fetching ", err)
-  }
-});
-
-// Estimate
-app.get('/estimate', async(req, res) => {
-  try {
-    const result = await pool.request().query('Select * from estimate')
-    res.json(result.recordset)
-  }
-  catch(err) {
-    console.log("Error in fetching ", err)
-  }
-});
-
-
-// Payment
-app.get('/payment', async(req, res) => {
-  try {
-    const result = await pool.request().query('Select * from payment')
-    res.json(result.recordset)
-  }
-  catch(err) {
-    console.log("Error in fetching ", err)
-  }
-});
-
-app.get('/paymentStatus', async(req, res) => {
-  try {
-    const result = await pool.request().query('Select * from payment_status')
-    res.json(result.recordset)
-  }
-  catch(err) {
-    console.log("Error in fetching ", err)
-  }
-});
-
-app.get('/invoiceStatus', async(req, res) => {
-  try {
-    const result = await pool.request().query('Select * from invoice_status')
-    res.json(result.recordset)
-  }
-  catch(err) {
-    console.log("Error in fetching ", err)
-  }
-});
-
-
-// Parts
-app.get('/parts', async(req, res) => {
-  try {
-    const result = await pool.request().query('Select * from parts')
-    res.json(result.recordset)
-  }
-  catch(err) {
-    console.log("Error in fetching ", err)
-  }
-});
-
-
-// Feedback
-app.get('/feedback', async(req, res) => {
-  try {
-    const result = await pool.request().query('Select * from feedback')
-    res.json(result.recordset)
-  }
-  catch(err) {
-    console.log("Error in fetching ", err)
-  }
-});
-
-
-app.listen(port, () => {
-  console.log('Server is running on port 5000');
 })
 
 
-module.exports = { config };
+
+
+
+app.listen(port,() =>{
+  console.log(`server is listening on ${port}`)
+})
+
+
+
+
+
+
+
+
+
+
