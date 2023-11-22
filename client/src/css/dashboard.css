@@ -1,6 +1,10 @@
 .dashboard-title {
   color: #fff;
-  height: 80px;
+  /* height: 80px; */
+  width: max-content;
+  margin: 3vh 0 1vh 0;
+  border-top: 1px solid #fff;
+  border-top: 1px solid #fff;
 }
 
 .dashboard .row {
@@ -51,10 +55,10 @@
 
 .dashboard-menu {
   border: 1px solid #fff;
-  padding: 20px;
+  /* padding: .; */
+  width: 15vw;
   text-align: center;
   border-radius: 5px;
-  font-size: 15px;
   color: #fff;
 }
 
@@ -62,21 +66,43 @@
   text-decoration: none;
   list-style: none;
   flex-direction: row;
-  margin: 20px;
+  margin: 1vw 1vw ;
   text-align: justify;
 }
-.dashboard-menu li:active {
-  border-left: 6px solid #fff;
-  border-radius: 5px;
-  background-color: #6d6c6c;
-}
 
-.dashboard-menu li a{
+.dashboard-menu li button{
   color: #ffff;
   text-decoration: none;
-  font-size: 20px;
+  font-size: 1.2rem;
+  border: none
+}
+.dashboard-menu li button:hover{
+  color: #000;
+}
+.dashboard-menu li button span {
+  font-size: 1.2rem;
+}
+.dashboard-menu li button span:hover {
+  color: #000;
 }
 
+#adminPanel, #titleAdmin  {
+  display: block;
+}
+#dashboard, #titleDashboard {
+  display: none;
+}
+#details, #titleDetails {
+  display: none;
+}
+
+#adminPanel {
+  margin-left: 5vw;
+}
+
+#details {
+  margin-left: 5vw;
+}
 
 /* -------------------------------------- Media queries ------------------------------------- */
 @media (max-width: 1400px) {
