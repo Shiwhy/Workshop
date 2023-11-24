@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const sql = require('mssql');
 const axios = require('axios')
+const cors = require('cors')
 
 const app = express();
 const PORT = 5001;
@@ -23,6 +24,7 @@ const poolConnect = pool.connect().then(console.log('connected'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cors())
 
 // var url = 'http://localhost:5001/login'
 app.post('/login', async (req, res) => {
