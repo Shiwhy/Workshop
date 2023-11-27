@@ -1,40 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../css/logSignForm.css'
-import { NavLink } from 'react-router-dom';
-// import verifyLogin from '../db/db_con'
-
+import axios from 'axios';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 // ---- Icons ----
-import { BiLogoFacebook } from "react-icons/bi";
+import { BiLogoFacebook, BiLogoTwitter, BiLogoGoogle } from "react-icons/bi";
 import { AiOutlineInstagram } from "react-icons/ai";
-import { BiLogoTwitter } from "react-icons/bi";
-import { BiLogoGoogle } from "react-icons/bi";
 // ---- x Icons x ----
 
 export default function LoginForm() {
 
-  function loginBtn() {
-    // var uname = document.getElementById('username');
-    // var pass = document.getElementById('password'); 
+  const navigate = useNavigate();
+  
+  const data = {username: '', password: ''}
+  const [inputData, setInputData] = useState(data)
 
-    // var verify = verifyLogin(uname.value, pass.value);
-    // alert(verify);
-    console.log('hakdshfk');
+  const handleData = (e) => {
+    setInputData({...inputData, [e.target.name]:e.target.value})
+  }
+
+  const handleLogin =  async (e) => {
+    e.preventDefault();
+    
+
+    if(!inputData.username || !inputData.password) {
+      alert('All fields are Required')
+    } else {
+      try{
+        const res = await  axios.post('http://localhost:5001/login', inputData, {
+          headers:{
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if(res.status===200) {
+          // alert('login  succesfull')
+          navigate('/home')
+        } else {
+          alert('login failed')
+        }
+      } catch(err) {
+        alert('invalid username or password')
+        console.error(err)
+      }
+    }
   }
 
   return (
     <>
-    <div className="container form" id='loginForm'>
+    <form className="container form" id='loginForm'>
       <h1>Login</h1>
       <div className="inputBox">
-        <input type="text" id='username' required="required" />
-        <span>Email</span>
+        <input type="text" id='username' name='username' value={ inputData.username } onChange={ handleData } required="required" />
+        <span>Username</span>
       </div>
       <div className="inputBox">
-        <input type="password" id='password' required="required" />
+        <input type="password" id='password' name='password' value={ inputData.password } onChange={ handleData } required="required" />
         <span>Password</span>
       </div>
-      <button className='loginBtn' onClick={loginBtn}>Log In</button>
+
+      <button className='loginBtn' type='submit' onClick={ handleLogin } >Log In</button>
+      
       <p>Don't have an account?  <NavLink to="/signup" className='signup-link'>SignUp here</NavLink></p>
       <div className="social-links">
         <div className="row">
@@ -54,7 +80,7 @@ export default function LoginForm() {
           </div>
         </div>
       </div>
-    </div>
+    </form>
     </>
   )
 }
