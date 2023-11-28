@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import '../css/logSignForm.css'
-import axios from 'axios'
+import { NavLink } from 'react-router-dom'
 
 
 export default function LoginForm() {
@@ -18,13 +18,20 @@ export default function LoginForm() {
     setInputData({...inputData, [e.target.name]:e.target.value})
   }
 
+  
   const handleSubmit = async(e) => {
+    var error = document.getElementById('error')
+
     e.preventDefault();
 
     if (!inputData.username || !inputData.name || !inputData.password || !inputData.email) {
-      alert("Please fill out all fields")
+      // alert("Please fill out all fields")
+      error.style.display = 'block';
+      return;
     } else if (!inputData.email.includes('@') || !inputData.email.includes('.')) {
-      alert('Please enter valid email')
+      // alert('Please enter valid email')
+      error.innerText = 'Please enter valid email';
+      error.style.display = 'block';
       return;
     }
     
@@ -37,17 +44,19 @@ export default function LoginForm() {
     });
     const data = await response.json()
     if(response.ok) {
-      alert('signup succesfull')
+      // alert('signup succesfull')
+      error.innerText = 'Signup Succesfull';
+      error.style.display = 'block';
     }else if(response.status === 400){
-      alert('user already exist ')
+      // alert('user already exist ')
+      error.innerText = 'User Already Exist ';
+      error.style.display = 'block';
     } else{
       alert('signup fail');
       console.log(data.error)
     }
     
   }
-
-
 
   return (
     <>
@@ -78,7 +87,12 @@ export default function LoginForm() {
         <input type="password" name='password' value={inputData.password} onChange={handleChange}/>
         <span>Password</span>
       </div>
+ 
+      <span id="error">All fields are required</span>
+ 
       <button className='signupBtn' onClick={ handleSubmit }>Sign Up</button>
+
+      <p>Already have an account? <NavLink to='/login'>Login here</NavLink></p>
     </form>
     </>
   )

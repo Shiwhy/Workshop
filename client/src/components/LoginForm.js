@@ -3,10 +3,8 @@ import '../css/logSignForm.css'
 import axios from 'axios';
 import { NavLink, useNavigate } from 'react-router-dom';
 
-// ---- Icons ----
-import { BiLogoFacebook, BiLogoTwitter, BiLogoGoogle } from "react-icons/bi";
-import { AiOutlineInstagram } from "react-icons/ai";
-// ---- x Icons x ----
+import { LuSmilePlus } from "react-icons/lu";
+
 
 export default function LoginForm() {
 
@@ -21,10 +19,11 @@ export default function LoginForm() {
 
   const handleLogin =  async (e) => {
     e.preventDefault();
+    var error = document.getElementById('error')
     
 
     if(!inputData.username || !inputData.password) {
-      alert('All fields are Required')
+        error.style.display = 'block';
     } else {
       try{
         const res = await  axios.post('http://localhost:5001/login', inputData, {
@@ -34,13 +33,18 @@ export default function LoginForm() {
         });
 
         if(res.status===200) {
-          // alert('login  succesfull')
           navigate('/home')
         } else {
           alert('login failed')
         }
       } catch(err) {
-        alert('invalid username or password')
+        // alert('Invalid Username or Password')
+
+        if(error.style.display === 'none') {
+          error.style.display = 'block';
+        }else{
+          error.style.display = 'block';
+        }
         console.error(err)
       }
     }
@@ -59,27 +63,14 @@ export default function LoginForm() {
         <span>Password</span>
       </div>
 
+      <p id='error'>Invalid Username or Password</p>
+
       <button className='loginBtn' type='submit' onClick={ handleLogin } >Log In</button>
       
       <p>Don't have an account?  <NavLink to="/signup" className='signup-link'>SignUp here</NavLink></p>
-      <div className="social-links">
-        <div className="row">
-          <div className="col">
-            <div>
-              <a href='https://accounts.google.com/v3/signin/identifier?authuser=0&continue=https%3A%2F%2Fmyaccount.google.com%2F&ec=GAlAwAE&hl=en_GB&service=accountsettings&flowName=GlifWebSignIn&flowEntry=AddSession&dsh=S1628195415%3A1692448803319014' className='google login-links'><BiLogoGoogle /></a>
-            </div>
-          </div>
-          <div className="col">
-            <div><a href="https://www.facebook.com/" className="facebook login-links"><BiLogoFacebook /></a></div>
-          </div>
-          <div className="col">
-            <div><a href="https://www.instagram.com/accounts/login/" className="instagram login-links"><AiOutlineInstagram /></a></div>
-          </div>
-          <div className="col">
-            <div><a href="https://twitter.com/i/flow/login" className="twitter login-links"><BiLogoTwitter /></a></div>
-          </div>
-        </div>
-      </div>
+
+      <span className='note'> <LuSmilePlus/> Signup First</span>
+
     </form>
     </>
   )

@@ -1,9 +1,13 @@
 import React from 'react';
 import '../css/home.css';
 import '../css/footer.css';
+// import axios from 'axios';
 // import logoCar from '../images/logoCar.png';
 import homeMechanic from '../images/Home Section/homeMechanic.jpg';
 import homeMechanic2 from '../images/Home Section/homeMechanic2.jpg';
+
+import Navbar from './Navbar';
+
 
 // ---- Icons ----
 import { BiSolidPhoneCall } from 'react-icons/bi';
@@ -24,6 +28,8 @@ import { SiGodotengine } from "react-icons/si"
 export default function Home() {
   return (
     <>
+    <Navbar/>
+    
     <div className="container" id='home'>
       <div className="home-page">
         <div className="first-page">
