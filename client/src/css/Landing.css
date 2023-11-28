@@ -1,0 +1,98 @@
+
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+1p&display=swap');
+@import url('https://fonts.cdnfonts.com/css/matter');
+
+.main{
+  /* background-color: red; */
+  padding: 5vw;
+  margin-top: 5%;
+  display: flex;
+  flex-direction: column;
+  gap: 1vw;
+  align-items: center;
+  position: inherit;
+}
+/* .cover {
+  background-color: rgba(54, 54, 54, 0.884);
+  width: 40vw;
+  height: 30vh;
+  border-radius: 0 100px ;
+  border-bottom: 4px solid #fff;
+  border-right: 4px solid #fff; 
+  position: absolute;
+  z-index: 1;
+} */
+
+.pin {
+  height: 25px;
+  width: 25px;
+  margin-top: 2vh;
+  background-color: #fff;
+  border-radius: 50%;
+  position: absolute;
+  left: 29vw;
+  z-index: 1;
+  animation: bounce 1.5s;
+}
+
+.cover-page {
+  /* background: linear-gradient(to right, #132831, #305764d7, #213e4bb2); */
+  background: linear-gradient(to right, #132831, #234049ee, #162c36b2);
+  width: 45vw;
+  padding: 2vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #fff;
+  border-radius: 0 10vw;
+  border-right: 6px solid #fff;
+  border-bottom: 4px solid #fff;
+}
+
+.logoCar img {
+  width: 25vw;
+  margin-top: .8vw;
+  margin-left: 0.5vw;
+  z-index: 1;
+  position: relative;
+}
+
+.logoText img {
+  width: 30vw;
+  z-index: 1;
+  position: relative
+}
+
+.links {
+  display: flex;
+  margin-top: 3vw;
+  gap: 3vw;
+}
+
+.links a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  letter-spacing: 0.1rem;
+  position: relative;
+  padding: 1vw 4vw;
+  border: 1px solid #fff;
+  border-radius: 30vw;
+  font-family: 'Matter', monospace ;
+}
+
+.links a:hover {
+  background: linear-gradient(to right, #132831, #305764d7, #213e4bb2);
+}
+
+.slogan {
+  margin-top: 2vw;
+  color: rgb(21, 216, 216);
+  margin-left: 1.5vw;
+  font-size: 2rem;
+  letter-spacing: 0.2rem;
+  /* font-family: 'M PLUS 1p', sans-serif; */
+  font-family: 'Matter', sans; ;
+  font-weight: 700;
+}
