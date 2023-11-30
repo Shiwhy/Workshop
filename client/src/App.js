@@ -11,6 +11,12 @@ import Jobcard from './components/Jobcard';
  import Dashboard from './components/Dashboard';
 import Invoice from './components/Invoice';
 import Landing from './components/Landing';
+import Vehicle from './views/Vehicle';
+import Users from './views/Users';
+import Employee from './views/Employee';
+import Work from './views/Work';
+import Delivery from './views/Delivery';
+import Feedback from './views/Feedback';
 // ---- x Components x ----
 
 function App() {
@@ -27,6 +33,14 @@ function App() {
             <Route path='/jobcard' element={<Jobcard />} />
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/invoice' element={<Invoice />} />
+
+            {/* views */}
+            <Route path='/vehicleview' element={<Vehicle/>} /> 
+            <Route path='/usersview' element={<Users/>} />
+            <Route path='/empview' element={<Employee/>} />
+            <Route path='/workview' element={<Work/>} />
+            <Route path='/deliveryview' element={<Delivery/>} />
+            <Route path='/feedbackview' element={<Feedback/>} />
           </Routes>
       </Router>
     </div>
