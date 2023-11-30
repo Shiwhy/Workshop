@@ -5,7 +5,7 @@ const app = express();
 const port = 5000;
 const cors = require('cors');
 
-app.use(cors())
+app.use(cors()); 
 
 const config = {
   user: 'meet',
@@ -32,7 +32,25 @@ pool.connect().then(() => {
 // Vehicle //
 app.get('/vehicle', async (req, res) => {
   try{
-    const result = await pool.request().query('select * from vehicle');
+    // const result = await pool.request().query('select * from vehicle');
+    const query = `
+      select vehicle.vehicle_id,
+          vehicle.vehicle_type,
+          vehicle_company.company_name,
+          vehicle.vehicle_model,
+          fuel.fuel_name,
+          vehicle.registration_no,
+          vehicle.KMs,
+          customer.customer_name,
+          vehicle_status.value
+      from vehicle 
+      join vehicle_company on vehicle.company = vehicle_company.company_id
+      join fuel on vehicle.fuel_type = fuel.fuel_id
+      join customer on vehicle.customer_id = customer.customer_id
+      join vehicle_status on vehicle.vehicle_status = vehicle_status.status_id
+    `;
+    const result = await pool.request().query(query)
+     
     res.json(result.recordset)
   } catch(err){
     console.log('error fetching data ',err)
@@ -57,7 +75,7 @@ app.get('/vehicle/pending/work', async (req, res) => {
   }
 })
 
-app.get('/vehicle/pending/delivery', async (req, res) => {
+app.get('/vehicle/pending/delivery/count', async (req, res) => {
   try{
     const result = await pool.request().query('select count(*) as pendingDelivery from vehicle where vehicle_status = 1')
     res.json(result.recordset)
@@ -66,11 +84,73 @@ app.get('/vehicle/pending/delivery', async (req, res) => {
   }
 })
 
+app.get('/vehicle/pending/delivery', async (req,res) => {
+  try {
+    const query = `
+      select vehicle.vehicle_id,
+        vehicle.vehicle_type,
+        vehicle_company.company_name,
+        vehicle.vehicle_model,
+        fuel.fuel_name,
+        vehicle.registration_no,
+        vehicle.KMs,
+        customer.customer_name,
+        vehicle_status.value
+      from vehicle 
+      join vehicle_company on vehicle.company = vehicle_company.company_id
+      join fuel on vehicle.fuel_type = fuel.fuel_id
+      join customer on vehicle.customer_id = customer.customer_id
+      join vehicle_status on vehicle_status.status_id = vehicle.vehicle_status
+      where vehicle_status = 1;
+    `;
+    const result = await pool.request().query(query)
+    res.json(result.recordset)
+  }catch(err){
+    console.log('error fetching data',err)
+  }
+
+})
+
+app.get('/vehicle/pending/getwork', async (req,res) => {
+  try {
+    const query = `      
+      select vehicle.vehicle_id,
+        vehicle.vehicle_type,
+        vehicle_company.company_name,
+        vehicle.vehicle_model,
+        fuel.fuel_name,
+        vehicle.registration_no,
+        vehicle.KMs,
+        customer.customer_name,
+        vehicle_status.value
+      from vehicle 
+      join vehicle_company on vehicle.company = vehicle_company.company_id
+      join fuel on vehicle.fuel_type = fuel.fuel_id
+      join customer on vehicle.customer_id = customer.customer_id
+      join vehicle_status on vehicle_status.status_id = vehicle.vehicle_status
+      where (vehicle_status = 2 or vehicle_status = 4);
+    `;
+    const result = await pool.request().query(query)
+    res.json(result.recordset)
+  }catch(err) {
+    console.log('error fetching data ', err);
+  }
+});
 
 // customer //
 app.get('/customer', async (req, res) => {
   try{
-    const result = await pool.request().query('select * from customer');
+    const query = `
+      select customer.customer_id,
+        customer.customer_name,
+        customer.contact,
+        customer.Address,
+        customer.email,
+        customer_status.value
+      from customer 
+      join customer_status on customer.customer_status = customer_status.status_id;
+    `;
+    const result = await pool.request().query(query);
     res.json(result.recordset)
   } catch (err){
     console.log('error fetching data ',err)
@@ -185,7 +265,20 @@ app.get('/feedback/count', async (req, res) => {
   } catch (err) {
     console.log('error fetching data ', err)    
   }
-})
+});
+
+// login //
+
+app.get('/login', async (req, res) => {
+  try {
+    const result = await pool.request().query('select * from login')
+    res.json(result.recordset)
+  } catch (err) {
+    console.log('error fetching data ', err)    
+  }
+});
+
+
 
 
 
