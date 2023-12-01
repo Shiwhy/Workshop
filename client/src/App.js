@@ -17,6 +17,9 @@ import Employee from './views/Employee';
 import Work from './views/Work';
 import Delivery from './views/Delivery';
 import Feedback from './views/Feedback';
+import Stock from './views/Stock';
+import Payment from './views/Payment';
+import Jobcarddetails from './views/Jobcarddetails';
 // ---- x Components x ----
 
 function App() {
@@ -41,6 +44,9 @@ function App() {
             <Route path='/workview' element={<Work/>} />
             <Route path='/deliveryview' element={<Delivery/>} />
             <Route path='/feedbackview' element={<Feedback/>} />
+            <Route path='/stockview' element={<Stock/>} />
+            <Route path='/paymentview' element={<Payment/>} /> 
+            <Route path='/jobcardview' element={<Jobcarddetails/>} /> 
           </Routes>
       </Router>
     </div>
