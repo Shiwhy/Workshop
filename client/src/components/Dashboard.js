@@ -1,78 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import '../css/dashboard.css'
+// import { NavLink } from 'react-router-dom'
+import '../css/dashboard.css';
+import Navbar from '../components/Navbar'
 import DashboardProps from '../Utils/DashboardProps';
+import axios from 'axios';
+
 
 
 // ---- Icons ----
 import{ VscDashboard, VscFeedback } from 'react-icons/vsc';
 import { IoCarSport } from 'react-icons/io5';
 import { PiUsersThreeFill, PiClipboardTextFill } from 'react-icons/pi';
-import { MdEngineering, MdPendingActions, MdAdminPanelSettings } from 'react-icons/md';
+import { MdEngineering, MdPendingActions } from 'react-icons/md';
 import { TbTruckDelivery, TbSettingsCog } from 'react-icons/tb';
 import { HiCurrencyRupee } from 'react-icons/hi';
-import { AiOutlineDashboard } from 'react-icons/ai';
-import { CgDetailsMore } from 'react-icons/cg';
-
 // ---- x Icons x ----
 
 export default function Dashboard() {
 
-  var admin = document.getElementById("adminPanel")
-  var adminTitle = document.getElementById("titleAdmin")
-  var dashboard = document.getElementById("dashboard")
-  var dashBoardTitle = document.getElementById("titleDashboard")
-  var details = document.getElementById("details")
-  var detailsTitle = document.getElementById("titleDetails")
-
-  var flag = 1
-  function showDashboard() {
-    if(flag === 1) {
-      dashBoardTitle.style.display = 'block'
-      dashboard.style.display = 'block'
-
-      adminTitle.style.display = 'none'
-      admin.style.display = 'none'
-      detailsTitle.style.display = 'none'
-      details.style.display = 'none'
-    }
-    else {
-      dashboard.style.display = 'block'
-    }
-  }
-
-  function showAdmin() {
-    if(flag === 1) {
-      adminTitle.style.display = 'block'
-      admin.style.display = 'block'
-
-      dashBoardTitle.style.display = 'none'
-      dashboard.style.display = 'none'
-      detailsTitle.style.display = 'none'
-      details.style.display = 'none'
-    }
-    else {
-      admin.style.display = 'block'
-    }
-  }
-
-  function showDetails() {
-    if(flag === 1) {
-      detailsTitle.style.display = 'block'
-      details.style.display = 'block'
-
-      adminTitle.style.display = 'none'
-      admin.style.display = 'none'
-      dashBoardTitle.style.display = 'none'
-      dashboard.style.display = 'none'
-    }
-    else {
-      details.style.display = 'block'
-    }
-  }
+  const [vehicleData, setVehicleData] = useState([])
 
   const [customer, setCustomer] = useState(0)
   const [emp, setEmp] = useState(0)
-  const [vehicle, setVehicle] = useState(0)
+  // const [vehicle, setVehicle] = useState(0)
   const [pendingWork,setPendingWork] = useState(0)
   const [pendingDelivery, setPendingDelivery] = useState(0)
   const [totalStock, setTotalStock] = useState(0)
@@ -84,10 +34,10 @@ export default function Dashboard() {
       try{
 
         // vehicle
-        let vehicle = await fetch('http://localhost:5000/vehicle/count')
-        let vehicleData = await vehicle.json()
-        let vehicleCount = vehicleData[0].count
-        setVehicle(vehicleCount)
+        // let vehicle = await fetch('http://localhost:5000/vehicle/count')
+        // let vehicleData = await vehicle.json()
+        // let vehicleCount = vehicleData[0].count
+        // setVehicle(vehicleCount)
 
         // customer
         let customer = await fetch('http://localhost:5000/customer/count')
@@ -108,7 +58,7 @@ export default function Dashboard() {
         setPendingWork(pendingWorkCount)
 
         // pending delivery
-        let pendingDelivery = await fetch('http://localhost:5000/vehicle/pending/delivery')
+        let pendingDelivery = await fetch('http://localhost:5000/vehicle/pending/delivery/count')
         let pendingDeliveryData = await pendingDelivery.json()
         let pendingDeliveryCount = pendingDeliveryData[0].pendingDelivery
         setPendingDelivery(pendingDeliveryCount)
@@ -137,6 +87,12 @@ export default function Dashboard() {
         let jobcardCountData = await jobcardCount.json()
         let jobcardCounter = jobcardCountData[0].count
         setJobcardCount(jobcardCounter)
+
+        axios.get('http://localhost:5000/vehicle/count')
+        .then((res) => {
+          console.log(res)
+          setVehicleData(res.data)
+        });
         
       } catch(err){
         console.log('Error fetching data: ', err)
@@ -149,41 +105,36 @@ export default function Dashboard() {
   
   return (
     <>
+    <Navbar/>
     <div className="container">
       <div className="dashboard">
 
-
-        <h4 className='dashboard-title' id='titleAdmin'> <MdAdminPanelSettings/> Admin</h4>
-        <h4 className='dashboard-title' id='titleDashboard'> <VscDashboard/> Dashboard</h4>
-        <h4 className='dashboard-title' id='titleDetails'> <CgDetailsMore/> Details</h4>
-          
+        
         <br />
-        <div className="row">
-          <div className="col-2">
-            <div className="dashboard-menu" id='dashboardMenu'>
-              <li><button id='toggleMenuBtn1' onClick={showAdmin}> <span><MdAdminPanelSettings/></span> Admin</button></li>
-              <li><button id='toggleMenuBtn2' onClick={showDashboard}> <span><AiOutlineDashboard/></span> Dashboard</button></li>
-              <li><button id='toggleMenuBtn3' onClick={showDetails}> <span><CgDetailsMore/></span> Details</button></li>
-            </div>
-          </div> 
 
-          <div className="col" id='adminPanel'>
-            <div className="container">
-              <h1>Admin Panel</h1>
+        <div className="row">
+          <div className="col">
+            <div className="dashboard-menu">
+              <h2><VscDashboard/> Dashboard</h2>
+            </div>
+
+
+            <div className="dash-slogan">
+              <p>Driven by passion, <br /> Fueled by expertise.</p>
             </div>
           </div>
 
-          <div className="col-8" id='dashboard'>
+          <div className="col-8" id="dashboard">
             <div className="container">
               <div className="row">                               {/* ------------------------ First Row */}
                 <div className="col">
-                  <DashboardProps icon={<IoCarSport/>} title='Total Vehicles' value={ vehicle } />
+                  <DashboardProps path='/vehicleview'  icon={<IoCarSport/>} title='Total Vehicles' value={ vehicleData.map((data) => {return data.count}) } />
                 </div>
                 <div className="col">
-                  <DashboardProps icon={<PiUsersThreeFill/>} title='Total Users' value={ customer }/> 
+                  <DashboardProps  path='/usersview' icon={<PiUsersThreeFill/>} title='Total Users' value={ customer }/> 
                 </div>
                 <div className="col">
-                  <DashboardProps icon={<MdEngineering/>} title='Total Employees' value={ emp } />
+                  <DashboardProps path='/empview' icon={<MdEngineering/>} title='Total Employees' value={ emp } />
                 </div>
               </div>
 
@@ -191,16 +142,16 @@ export default function Dashboard() {
 
               <div className="row">                               {/* ------------------------ Second Row */}
                 <div className="col">
-                  <DashboardProps icon={<MdPendingActions/>} title='Pending Work' value={ pendingWork } />
+                  <DashboardProps path='/workview' icon={<MdPendingActions/>} title='Pending Work' value={ pendingWork } />
                 </div>
                 {/* <div className="col">
                   <DashboardProps icon={<MdBookOnline/>} title='Online Registrations' value='x'/>
                 </div> */}
                 <div className="col">
-                  <DashboardProps icon={<TbSettingsCog/>} title='Total Stocks' value={ totalStock } />
+                  <DashboardProps path='/stockview' icon={<TbSettingsCog/>} title='Total Stocks' value={ totalStock } />
                 </div>
                 <div className="col">
-                  <DashboardProps icon={<TbTruckDelivery />} title='Pending Delivery' value={ pendingDelivery } />
+                  <DashboardProps path='/deliveryview' icon={<TbTruckDelivery />} title='Pending Delivery' value={ pendingDelivery } />
                 </div>
               </div>
 
@@ -208,21 +159,15 @@ export default function Dashboard() {
 
               <div className="row">
                 <div className="col">
-                  <DashboardProps icon={<HiCurrencyRupee/>} title='Remaining Payment' value={ pendingPayment } />
+                  <DashboardProps  path='/paymentview' icon={<HiCurrencyRupee/>} title='Remaining Payment' value={ pendingPayment } />
                 </div>
                 <div className="col">
-                  <DashboardProps icon={<PiClipboardTextFill />} title='Jobcards' value={ jobcardCount } />
+                  <DashboardProps  path='/jobcardview' icon={<PiClipboardTextFill />} title='Jobcards' value={ jobcardCount } />
                 </div>
                 <div className="col">
-                   <DashboardProps icon={<VscFeedback/>} title='Feedbacks' value={ feedbackCount } /> 
+                   <DashboardProps path='/feedbackview' icon={<VscFeedback/>} title='Feedbacks' value={ feedbackCount } /> 
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div className="col" id="details">
-            <div className="container">
-              <h1>Details</h1>
             </div>
           </div>
 
@@ -232,3 +177,5 @@ export default function Dashboard() {
     </>
   )
 }
+
+

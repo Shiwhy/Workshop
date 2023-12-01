@@ -6,14 +6,9 @@ import { NavLink } from 'react-router-dom';
 
 // ---- Icons ----
 import { BiHomeAlt2 } from "react-icons/bi" //Home
-import { AiOutlineUser } from "react-icons/ai";  //LogIn
-import { BiUserPlus } from "react-icons/bi"; //SignUp
-import { GiTyre } from "react-icons/gi"; //AboutUs
-import { FiMenu } from "react-icons/fi";
-import { IoCloseSharp } from "react-icons/io5"
-// import { VscDashboard } from "react-icons/vsc"; //Dashboard
-// import { BsCreditCard2Front } from "react-icons/bs"; //Jobcard
-// import { LiaFileInvoiceDollarSolid } from "react-icons/lia" //invoice
+import { VscDashboard } from "react-icons/vsc"; //Dashboard
+import { BsCreditCard2Front } from "react-icons/bs"; //Jobcard
+import { LiaFileInvoiceDollarSolid } from "react-icons/lia" //invoice
 
 // ----x Icons x ----
 
@@ -24,24 +19,19 @@ export default function Navbar() {
     <>
     <header className="App-header">
       <div className="logo">
-        <img src={logoCar} /*width={200}*/ alt="/" />
+        <img src={logoCar} alt="/" />
       </div>
       <div className="logo-text">
-        <img src={logoText} /*width={300}*/ alt="/" />
+        <img src={logoText} alt="/" />
       </div>
       <nav>
         <div className="navbar">
           <ul id='sidemenu'>
-            <li><NavLink to="/"> <BiHomeAlt2 /> Home</NavLink></li>
-            <li><NavLink to="/login"> <AiOutlineUser/> Login</NavLink></li>
-            <li><NavLink to="/signup"> <BiUserPlus/> SignUp</NavLink></li>
-            <li><NavLink to="/about"> <GiTyre/> About Us</NavLink></li>
-            {/* <li><NavLink to='/jobcard'> <BsCreditCard2Front /> Jobcard</NavLink></li> */}
-            {/* <li><NavLink to='/invoice'> <LiaFileInvoiceDollarSolid /> Invoice</NavLink></li> */}
-            {/* <li><NavLink to='/dashboard'> <VscDashboard /> Dashboard</NavLink></li> */}
-            <div className="menu-icon"><IoCloseSharp/></div>
+            <li><NavLink to="/home"> <BiHomeAlt2 /> Home</NavLink></li>
+            <li><NavLink to='/dashboard'> <VscDashboard /> Dashboard</NavLink></li> 
+            <li><NavLink to='/jobcard'> <BsCreditCard2Front /> Jobcard</NavLink></li>
+            <li><NavLink to='/invoice'> <LiaFileInvoiceDollarSolid /> Invoice</NavLink></li>
           </ul>
-          <div className="menu-icon"><FiMenu/></div>
         </div>
       </nav>
     </header>

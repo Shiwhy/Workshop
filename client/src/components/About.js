@@ -6,10 +6,14 @@ import team from '../images/About Section/team.jpg'
 
 // ---- Icons ----
 import { FaPeopleGroup } from "react-icons/fa6" //our Team heading
+import Navbar from './Navbar';
 // ---- x Icons x ----
 
 export default function About() {
+
   return (
+    <>
+    <Navbar/>
     <div className='container' id='about'>
       <br />
       <h1 className='about-heading'>
@@ -50,5 +54,6 @@ export default function About() {
           </div>
         </div>
     </div>
+    </>
   )
 }

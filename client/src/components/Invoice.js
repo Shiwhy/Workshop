@@ -4,6 +4,7 @@ import { RiDeleteBinLine } from 'react-icons/ri';
 // import InvoiceProps from '../Utils/InvoiceProps';
 import { LiaFileInvoiceDollarSolid } from 'react-icons/lia';
 import { BiSave } from 'react-icons/bi';
+import Navbar from './Navbar';
 
 export default function Invoice() {
 
@@ -45,6 +46,10 @@ export default function Invoice() {
 
   return (
     <>
+    <Navbar/>
+
+
+    
     <div className="invoice">
       <div className="container">
         <h1 className="invoice-title">

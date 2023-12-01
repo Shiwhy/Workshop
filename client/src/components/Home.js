@@ -1,8 +1,6 @@
 import React from 'react';
 import '../css/home.css';
 import '../css/footer.css';
-// import axios from 'axios';
-// import logoCar from '../images/logoCar.png';
 import homeMechanic from '../images/Home Section/homeMechanic.jpg';
 import homeMechanic2 from '../images/Home Section/homeMechanic2.jpg';
 
@@ -34,7 +32,7 @@ export default function Home() {
       <div className="home-page">
         <div className="first-page">
           <h1 className='main-heading'>
-            WELCOME<br /> TO OUR <br /> GARAGE
+            WELCOME<br /> TO THE <br /> GARAGE
           </h1>
         </div>
       </div>
@@ -51,7 +49,6 @@ export default function Home() {
           </div>
           <div className="col">
             <p className="second-page-text">
-              {/* This management system is an integrated garage management system that rapidly cuts down on the admin time and helps you focus more on fixing cars. It is a smart vehicle service software with all the features useful for day-to-day auto service management process. Accelerate your workshop business success with this workshop management system.*/}
 
               We are proud to introduce you to this Garage Management System, a dedicated team of automotive enthusiasts and technology experts. With a passion for two wheelers and four wheelers, a commitment to innovation, we embarked on a journey to simplify and enhance the garage management experience. 
               <br />
@@ -104,7 +101,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-          {/* <br /> */}
+          
         <div className="row">
           <div className="col">
             <div className="service-box">
@@ -129,7 +126,6 @@ export default function Home() {
       <br/>
     </div>
 
-    {/* <br /> */}
     <footer>
       <br/><br/>
       <div className="container">
@@ -138,7 +134,6 @@ export default function Home() {
             <div className="footer-logo">
             <span className='footer-logo-car'><IoCarSport /></span><span className='footer-logo-text'>GARAGE</span>
               
-              {/* <img src={logoCar} width={500} alt="/" /> */}
             </div>
           </div>
           <div className="col first-col">

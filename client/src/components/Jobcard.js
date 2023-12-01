@@ -2,10 +2,12 @@ import React from 'react';
 import '../css/jobcard.css'
 import { BsCreditCard2Front } from 'react-icons/bs'
 import { BiSave } from 'react-icons/bi'
+import Navbar from './Navbar';
 
 export default function Jobcard() {
   return (
     <>
+    <Navbar/>
     <div className="container jobcard">
       <h1 className='jobcard-title'><BsCreditCard2Front/> JobCard</h1> 
       <div className="jobcard-details">
