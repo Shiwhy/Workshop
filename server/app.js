@@ -140,15 +140,26 @@ app.get('/vehicle/pending/getwork', async (req,res) => {
 // customer //
 app.get('/customer', async (req, res) => {
   try{
+    // select customer.customer_id,
+    //   customer.customer_name,
+    //   customer.contact,
+    //   customer.Address,
+    //   customer.email,
+    //   customer_status.value
+    // from customer 
+    // join customer_status on customer.customer_status = customer_status.status_id;
     const query = `
       select customer.customer_id,
         customer.customer_name,
         customer.contact,
         customer.Address,
         customer.email,
-        customer_status.value
+        customer_status.value,
+        vehicle.registration_no,
+        vehicle.vehicle_model
       from customer 
-      join customer_status on customer.customer_status = customer_status.status_id;
+      join customer_status on customer.customer_status = customer_status.status_id
+      join vehicle on vehicle.vehicle_id = customer.customer_id
     `;
     const result = await pool.request().query(query);
     res.json(result.recordset)
@@ -211,7 +222,29 @@ app.get('/parts/totalStock', async (req, res) => {
 // jobcard //
 app.get('/jobcard', async (req, res) => {
   try{
-    const result = await pool.request().query('select * from jobcard')
+    const query = `
+      select jobcard.jobcard_id,
+        jobcard.jobcard_date,
+        jobcard_status.value as jobcardStatus,
+        customer.customer_name,
+        employee.emp_name,
+        vehicle.vehicle_model,
+        complains.complain,
+        parts.part_name,
+        payment_status.value,
+        payment.invoice_no,
+        vehicle.registration_no
+      from jobcard
+      join jobcard_status on jobcard_status.status_id = jobcard.jobcard_status
+      join customer on customer.customer_id = jobcard.customer_id
+      join employee on employee.emp_id = jobcard.employee_id
+      join vehicle on vehicle.vehicle_id = jobcard.vehicle_id
+      join complains on complains.complain_id = jobcard.complain_id
+      join parts on parts.part_id = jobcard.part_id
+      join payment on payment.payment_id = jobcard.payment_id
+      join payment_status on payment_status.status_id = jobcard.payment_id
+    `;
+    const result = await pool.request().query(query)
     res.json(result.recordset)
   } catch(err) {
     console.log('error fetching data ',err)
@@ -231,7 +264,27 @@ app.get('/jobcard/count', async (req, res) => {
 // payment //
 app.get('/payment', async (req, res) => {
   try{
-    const result = await pool.request().query('select * from payment')
+    const query = `
+      select payment.payment_id,
+        payment_status.value, 
+        payment.payment_type, 
+        payment.amount,
+        payment.bank_acc,
+        payment.ack_no,
+        payment.payment_date,
+        payment.invoice_id,
+        payment.invoice_name,
+        payment.invoice_no,
+        invoice_status.inv_value, 
+        customer.customer_name, 
+        vehicle.vehicle_model 
+      from payment
+      join payment_status on payment_status.status_id = payment.payment_status
+      join invoice_status on invoice_status.status_id = payment.invoice_status
+      join customer on customer.customer_id = payment.customer_id
+      join vehicle on vehicle.vehicle_id = payment.vehicle_id
+    `;
+    const result = await pool.request().query(query)
     res.json(result.recordset)
   } catch(err) {
     console.log('error fetching data ',err)
@@ -251,7 +304,15 @@ app.get('/payment/pending', async (req, res) => {
 // feedback //
 app.get('/feedback', async (req, res) => {
   try{
-    const result = await pool.request().query('select * from feedback')
+    const query = `
+      select feedback.feedback_id,
+        customer.customer_name,
+        feedback.feedback,
+        customer.email
+      from feedback
+      join customer on customer.customer_id = feedback.customer_id;
+    `;
+    const result = await pool.request().query(query)
     res.json(result.recordset)
   } catch(err) {
     console.log('error fetching data ',err)
