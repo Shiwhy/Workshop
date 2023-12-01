@@ -13,20 +13,36 @@ const Work = () => {
   }, [])
   return (
     <>
+    <div className="mainDivision">
       {work.map((pendingWork) => {
         return <div className='view' key={pendingWork.vehicle_id}>
-          <h5>{pendingWork.vehicle_type}</h5>
-          <h5>{pendingWork.company_name}</h5>
-          <h5>{pendingWork.vehicle_model}</h5>
-          <h5>{pendingWork.fuel_name}</h5>
-          <h5>{pendingWork.registration_no}</h5>
-          <h5>{pendingWork.KMs}</h5>
-          <h5>{pendingWork.customer_name}</h5>
-          <h5>{pendingWork.value}</h5>
-
-          
+          <div className="view-card">
+            <p className='plate'>{pendingWork.registration_no}</p>
+            <p>
+              <span>Vehicle Type :&nbsp; </span>{pendingWork.vehicle_type}
+            </p>
+            <p>
+              <span>Company :&nbsp; </span>{pendingWork.company_name}
+            </p>
+            <p>
+              <span>Model :&nbsp; </span>{pendingWork.vehicle_model}
+            </p>
+            <p>
+              <span>Fuel :&nbsp; </span>{pendingWork.fuel_name}
+            </p>
+            <p>
+              <span>KMs :&nbsp; </span>{pendingWork.KMs}
+            </p>
+            <p>
+              <span>Customer :&nbsp; </span>{pendingWork.customer_name}
+            </p>
+            <p>
+              <span>Status :&nbsp; </span>{pendingWork.value}
+            </p>
+          </div>
         </div>
       })}
+    </div>
     </>
   )
 }

@@ -15,21 +15,25 @@ const Vehicle = () => {
 
   return (
     <>
-    <h1>hello</h1>
-    {vehicle.map((vehicle) => {
+    <div className="mainDivision">
 
-      return <div className="view" > 
-        <h5>Type: {vehicle.vehicle_type}</h5>
-        <h5>company: {vehicle.company_name}</h5>
-        <h5>Model: {vehicle.vehicle_model}</h5>
-        <h5>fuel: {vehicle.fuel_name}</h5>
-        <h5>Reg: {vehicle.registration_no}</h5>
-        <h5>KM: {vehicle.KMs}</h5>
-        <h5>Customer: {vehicle.customer_name}</h5>
-        <h5>Vehicle: {vehicle.value}</h5>
-      </div>
+      {vehicle.map((vehicle) => {
 
-    })}
+        return <div className="view" key={vehicle.vehicle_id}> 
+          <div className="view-card">
+            <p className='plate'>{vehicle.registration_no}</p>
+            <p><span>Type: </span> {vehicle.vehicle_type}</p>
+            <p><span>company: </span> {vehicle.company_name}</p>
+            <p><span>Model: </span> {vehicle.vehicle_model}</p>
+            <p><span>fuel: </span> {vehicle.fuel_name}</p>
+            <p><span>KM: </span> {vehicle.KMs}</p>
+            <p><span>Customer: </span> {vehicle.customer_name}</p>
+            <p><span>Vehicle: </span> {vehicle.value}</p>
+          </div>
+        </div>
+
+      })}
+    </div>
     </>
   )
 }

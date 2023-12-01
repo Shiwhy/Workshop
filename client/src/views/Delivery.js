@@ -15,19 +15,37 @@ const Delivery = () => {
 
   return (
     <>
-    {delivery.map((deliveryData) => {
-      return <div className="view" key={deliveryData.vehicle_id}>
-         <h5>{deliveryData.vehicle_type}</h5>
-          <h5>{deliveryData.company_name}</h5>
-          <h5>{deliveryData.vehicle_model}</h5>
-          <h5>{deliveryData.fuel_name}</h5>
-          <h5>{deliveryData.registration_no}</h5>
-          <h5>{deliveryData.KMs}</h5>
-          <h5>{deliveryData.customer_name}</h5>
-          <h5>{deliveryData.value}</h5>
+    <div className="mainDivision">
+      {delivery.map((deliveryData) => {
+        return <div className="view" key={deliveryData.vehicle_id}>
+          <div className="view-card">
+            <p className='plate'>{deliveryData.registration_no}</p>
+            <p>
+              <span>Type :&nbsp; </span>{deliveryData.vehicle_type}
+            </p>
+            <p>
+              <span>Company :&nbsp; </span>{deliveryData.company_name}
+            </p>
+            <p>
+              <span>Model :&nbsp; </span>{deliveryData.vehicle_model}
+            </p>
+            <p>
+              <span>Fuel :&nbsp; </span>{deliveryData.fuel_name}
+            </p>
+            <p>
+              <span>KMs :&nbsp; </span>{deliveryData.KMs}
+            </p>
+            <p>
+              <span>Customer :&nbsp; </span>{deliveryData.customer_name}
+            </p>
+            <p>
+              <span>Status :&nbsp; </span>{deliveryData.value}
+            </p>
+          </div>
 
-      </div>
-    })}
+        </div>
+      })}
+    </div>
        
     </>
   )
