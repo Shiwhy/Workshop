@@ -141,7 +141,7 @@ export default function Invoice() {
             </div>
           </div>
         </div>
-        <button><BiSave/> Save</button>
+        <button className='savebtn'><BiSave/> Save</button>
       </div>
       <br /><br />
     </div>

@@ -10,7 +10,7 @@ export default function LoginForm() {
 
   const navigate = useNavigate();
   
-  const data = {username: '', password: ''}
+  const data = { username: '', password: '' };
   const [inputData, setInputData] = useState(data)
 
   const handleData = (e) => {

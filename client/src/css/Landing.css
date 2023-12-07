@@ -1,6 +1,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+1p&display=swap');
-@import url('https://fonts.cdnfonts.com/css/matter');
+@import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&display=swap');
+
 
 .main{
   /* background-color: red; */
@@ -79,7 +80,7 @@
   padding: 1vw 4vw;
   border: 1px solid #fff;
   border-radius: 30vw;
-  font-family: 'Matter', monospace ;
+  font-family: 'Hedvig Letters Serif', serif;
 }
 
 .links a:hover {
@@ -90,9 +91,10 @@
   margin-top: 2vw;
   color: rgb(21, 216, 216);
   margin-left: 1.5vw;
-  font-size: 2rem;
-  letter-spacing: 0.2rem;
+  font-size: 2.5rem;
+  letter-spacing: 0.1rem;
   /* font-family: 'M PLUS 1p', sans-serif; */
-  font-family: 'Matter', sans; ;
+  font-family: 'M Plus 1', serif;
   font-weight: 700;
+  
 }
