@@ -4,8 +4,7 @@ const { ConnectionPool } = require('mssql');
 const app = express();
 const port = 5000;
 const cors = require('cors');
-
-app.use(cors()); 
+const bodyParser = require('body-parser');
 
 const config = {
   user: 'meet',
@@ -26,8 +25,8 @@ pool.connect().then(() => {
   console.error('Error connecting to SQL Server:', err);
 });
 
-// ------------------------------ API -----------------------------------------------------
 
+// ------------------------------ API -----------------------------------------------------
 
 // Vehicle //
 app.get('/vehicle', async (req, res) => {
@@ -140,14 +139,6 @@ app.get('/vehicle/pending/getwork', async (req,res) => {
 // customer //
 app.get('/customer', async (req, res) => {
   try{
-    // select customer.customer_id,
-    //   customer.customer_name,
-    //   customer.contact,
-    //   customer.Address,
-    //   customer.email,
-    //   customer_status.value
-    // from customer 
-    // join customer_status on customer.customer_status = customer_status.status_id;
     const query = `
       select customer.customer_id,
         customer.customer_name,
@@ -185,9 +176,8 @@ app.get('/employee', async (req, res) => {
     res.json(result.recordset)
   } catch (err) {
     console.log('error fetching data ', err)
-    
   }
-})
+});
 
 app.get('/employee/count', async(req,res) => {
   try{
@@ -336,6 +326,18 @@ app.get('/login', async (req, res) => {
     res.json(result.recordset)
   } catch (err) {
     console.log('error fetching data ', err)    
+  }
+});
+
+app.get('/empid', async (req, res) => {
+  try {
+    const employee = `
+      select * from employee
+    `;
+    const empResult = await pool.request().query(employee)
+    res.json(empResult.recordset[0].emp_id)    
+  } catch (err) {
+    console.log(err)
   }
 });
 

@@ -39,8 +39,9 @@ app.post('/login', async (req, res) => {
       select count(*) as count from signup where username='${username}' and password='${password}';
     `;
     const result = await pool.request().query(query);
-    const user = result.recordset[0].count;
 
+    // authentication
+    const user = result.recordset[0].count;
     if(user === 1){
       res.status(200).json({message: 'login succesfully'})
     }else{
@@ -62,6 +63,7 @@ app.post('/signup', async (req,res) => {
     
     const { username, name, password, email } = req.body;
 
+    // authentication             
     const check= `
       select * from signup where username = '${username}' and email = '${email}';
     `;
@@ -70,6 +72,7 @@ app.post('/signup', async (req,res) => {
       return res.status(400).json({ error: 'user already exist' });
     }
 
+    // insert after authentication success
     const insert = `insert into signup (name, username, password, email) values ('${name}', '${username}', '${password}', '${email}')`;
     await pool.request().query(insert);
     res.status(200).json({ message: 'signup successfull'});
@@ -80,62 +83,36 @@ app.post('/signup', async (req,res) => {
   }
 });
 
+app.post('/jobcard', async (req,res) => {
+  try{
+    await poolConnect;
 
-// app.post('/signup',async (req, res) => {
+    const { 
+      name, contact, email, address, custStatus, 
+      vehType, fuel, company, model, plate, kms,
+      empid
+    } = req.body;
 
-//   const { name, username, email, password } = req.body;
-//   try {
-//     await poolConnect;
-
-//     const checkUserQuery = `
-//     select * from signup where username = '${username}' and email = '${email}'
-//     `;
-//     const checkUserResult = await pool.request().query(checkUserQuery);
-
-//     if (checkUserResult.recordset.length > 0) {
-//       return res.status(400).json({ error: 'User already exists' });
-//     }
-
-//     const query = `
-//       insert into signup (name, username, password, email) 
-//       values ('${name}', '${username}', '${password}', '${email}')
-//     `;
-//     await pool.request().query(query);
-//     res.status(200).json({ message: 'Signup successfully' });
-
-//   } catch (error) {
-//     res.status(500).json({ error: 'Error occurred while signup' });
-//     console.error('Error occurred:', error);
-//   }
-// });
-
-
-
-
-
-// app.post('/signup',async (req, res) => {
-
-//   const{ name, username, email, password } = req.body;
-//   try {
-//     await poolConnect;
-
-//     const request = pool.request();
-//     request.input('name', sql.VarChar(100), name);
-//     request.input('username', sql.VarChar(100), username);
-//     request.input('password', sql.NVarChar(100), password);
-//     request.input('email', sql.NVarChar(100), email);
-
-//     const query = 'insert into signup (name,username,password,email) values (@name, @username, @password, @email)';
-//     await request.query(query);
-
-//     res.status(200).json({ message: 'signup successfully' });
-
-//   } catch (error) {
-//     console.error('Error occurred:', error);
-//     res.status(500).json({ error: 'error occurred while signup'});
-//   }
-// });
-
+    const customer = `
+      insert into customer ( customer_name, contact, Address, email, customer_status )
+      output inserted.customer_id
+      values ( '${name}', '${contact}', '${address}', '${email}', '${custStatus}' );
+    `;
+    
+    const customerResult = await pool.request().query(customer);
+    const customer_id = customerResult.recordset[0].customer_id;
+    
+    const vehicle = `
+      insert into vehicle ( vehicle_type, fuel_type, company, vehicle_model, registration_no, KMs, customer_id ) 
+      output inserted.vehicle_id
+      values ( '${vehType}', '${fuel}', '${company}', '${model}', '${plate}', '${kms}', '${customer_id}' );
+    `;
+    await pool.request().query(vehicle);
+   
+  }catch(err){
+    console.log(err)
+  }
+});
 
 
 
