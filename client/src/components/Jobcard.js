@@ -6,7 +6,6 @@ import { BiSave } from 'react-icons/bi'
 import Navbar from './Navbar';
 
 export default function Jobcard() {
-
   
   const details = {
     // customer
@@ -17,7 +16,17 @@ export default function Jobcard() {
 
     // employee
     empid: '', empName: '', empContact: '',
-}
+
+    // complain
+    complains: '', reqService: '', compStatus: '',
+
+    // payment
+    paymentMethod: '', paymentStatus: '', amount: '',
+
+    //parts
+    partname: ''
+
+  }
   const [data, setData] = useState(details)
   
   const handleChange = (e) => {
@@ -36,9 +45,26 @@ export default function Jobcard() {
       console.log(err)
     }
   }
+  
 
   const getData = async () => {
-    
+    try {
+      const response = await axios.post('http://localhost:5001/jobcard/employee', data, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+        
+      const { empName, empContact } = response.data;
+      setData({
+        ...data,
+        empName: empName,
+        empContact: empContact,
+      });
+
+    } catch (err) {
+        console.log(err)
+    }
   }
 
   return (
@@ -112,11 +138,11 @@ export default function Jobcard() {
 
               <span>Fuel :</span>
                 <select name='fuel' onChange={handleChange} value={data.fuel}>
-                  <option value="1">Select Fuel</option>
-                  <option value="2">Petrol</option>
-                  <option value="3">Diesel</option>
-                  <option value="4">CNG</option>
-                  <option value="5">EV</option>
+                  <option value="">Select Fuel</option>
+                  <option value="1">Petrol</option>
+                  <option value="2">Diesel</option>
+                  <option value="3">CNG</option>
+                  <option value="4">EV</option>
                 </select>
 
               <span>Vehicle Company: </span> 
@@ -155,12 +181,11 @@ export default function Jobcard() {
               />
 
             </div>
-            <div className="col">
+            {/* <div className="col">
               <span>Date of Vehicle Received :</span> 
               <input 
                 type="date" 
                 name='receiveDate'
-
               />
 
               <span>Completion Date :</span> 
@@ -175,6 +200,17 @@ export default function Jobcard() {
                 name='deliveryDate'
               />
 
+            </div> */}
+
+            <div className="col">
+            <h6>Service status</h6>
+            <span>Current :</span>
+              <select name='vehicleStatus'>
+                <option value="1">Pending</option>
+                <option value="2">Complete</option>
+                <option value="3">Delivered</option>
+              </select>
+            <span>Expected Completion Date :</span> <input type="date" /> 
             </div>
           </div>
         </div>
@@ -186,7 +222,9 @@ export default function Jobcard() {
                 <span>Complains :</span> 
                 <textarea cols="70" rows="10"
                   className='complain-box'
-                  name='complain'
+                  name='complains'
+                  value={data.complains}
+                  onChange={handleChange}
                 ></textarea>
                 
               </div>
@@ -194,8 +232,18 @@ export default function Jobcard() {
                 <span>Requested Service :</span> 
                 <textarea cols="70" rows="10"
                   className='complain-box'
-                  name='requestedService'
+                  name='reqService'
+                  value={data.reqService}
+                  onChange={handleChange}
                 ></textarea>
+              </div>
+              <div className="col-2">
+                Status: <br />
+                <select name="compStatus" onChange={handleChange} value={data.compStatus}>
+                  <option value="">Select Status</option>
+                  <option value="2">Pending</option>
+                  <option value="1">Done</option>
+                </select>
               </div>
             </div>
           </div>
@@ -216,21 +264,23 @@ export default function Jobcard() {
                 <button className='empdetail' onClick={getData}>Get</button>
 
                 <span>Name :</span> 
-                <input 
+                <input readOnly
                   type="text" 
                   name='empName'
                   value={data.empName}
+                  onChange={handleChange}
                 />
 
                 <span>Contact :</span> 
-                <input 
+                <input readOnly
                   type="text"
                   name='empContact' 
                   value={data.empContact}
+                  onChange={handleChange}
                 />
 
               </div>
-              <div className="col">
+              {/* <div className="col">
                 <h6>Service status</h6>
                 <span>Current :</span>
                   <select name='vehicleStatus'>
@@ -239,24 +289,38 @@ export default function Jobcard() {
                     <option value="3">Delivered</option>
                   </select>
                 <span>Expected Completion Date :</span> <input type="date" /> 
-              </div>
+              </div> */}
               <div className="col">
                 <h6>Parts Required</h6>
-                <textarea cols="30" rows="8"></textarea>
+                <textarea cols="30" rows="8" name='parts' value={data.parts} onChange={handleChange}></textarea>
+                {/* <select name="/" >
+                  <option value="">Select Part</option>
+                  <option value=""></option>
+                  <option value="">Select Part</option>
+                  <option value="">Select Part</option>
+                </select> */}
               </div>
               <div className="col">
                 <h6>Payment</h6>
                 <span>Method :</span>
-                  <select name='paymentMethod'>
-                    <option value="1">Cash</option>
-                    <option value="2">UPI</option>
-                    <option value="3">Bank Transfer</option>
+                  <select name='paymentMethod' vaule={data.paymentMethod} onChange={handleChange}>
+                    <option value="">Select Method</option>
+                    <option value="Cash">Cash</option>
+                    <option value="UPI">UPI</option>
+                    <option value="Bank transfer">Bank Transfer</option>
                   </select>
-                <span>Amount :</span> <input type="text" />
+                <span>Amount :</span> 
+                <input 
+                  type="text" 
+                  name='amount'
+                  value={data.amount}
+                  onChange={handleChange}
+                />
                 <span>Status :</span> 
-                  <select name='paymentStatus'>
-                    <option value="1">Pending</option>
-                    <option value="2">Done</option>
+                  <select name='paymentStatus' value={data.paymentStatus} onChange={handleChange}>
+                    <option value="">Select status</option>
+                    <option value="1">Done</option>
+                    <option value="2">Pending</option>
                   </select>
               </div>
             </div>
