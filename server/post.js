@@ -90,7 +90,8 @@ app.post('/jobcard', async (req,res) => {
     const { 
       name, contact, email, address, custStatus, 
       vehType, fuel, company, model, plate, kms,
-      empid
+      complains, reqService, compStatus, 
+      paymentStatus, paymentMethod, amount,
     } = req.body;
 
     const customer = `
@@ -98,7 +99,6 @@ app.post('/jobcard', async (req,res) => {
       output inserted.customer_id
       values ( '${name}', '${contact}', '${address}', '${email}', '${custStatus}' );
     `;
-    
     const customerResult = await pool.request().query(customer);
     const customer_id = customerResult.recordset[0].customer_id;
     
@@ -107,12 +107,54 @@ app.post('/jobcard', async (req,res) => {
       output inserted.vehicle_id
       values ( '${vehType}', '${fuel}', '${company}', '${model}', '${plate}', '${kms}', '${customer_id}' );
     `;
-    await pool.request().query(vehicle);
-   
+    const vehicleResult = await pool.request().query(vehicle);
+    const vehicle_id = vehicleResult.recordset[0].vehicle_id;
+
+    const complain = ` 
+      insert into complains ( complain, complain_status, vehicle_id, requested_service )
+      output inserted.complain_id
+      values ( '${complains}', '${compStatus}', '${vehicle_id}','${reqService} ');
+    `;
+    await pool.request().query(complain);
+
+    const payment = `
+      insert into payment ( payment_status, payment_type, amount )
+      values ( '${paymentStatus}', '${paymentMethod}', '${amount}');
+    `;
+    await pool.request().query(payment);
+
   }catch(err){
     console.log(err)
   }
 });
+
+
+
+// fetching employee data in jobcard
+app.post('/jobcard/employee', async(req,res) => {
+  try{
+    await poolConnect;
+
+    const { empid } = req.body; 
+
+    const query = `
+      select emp_name, contact from employee where emp_id = '${empid}';
+    `;
+
+    const result = await pool.request().query(query);
+      
+    const { emp_name, contact } = result.recordset[0];
+    res.json({
+       empName: emp_name,
+       empContact: contact,
+    });
+
+  }catch(err){
+    console.log(err)
+  }
+});
+
+
 
 
 

@@ -25,6 +25,10 @@ pool.connect().then(() => {
   console.error('Error connecting to SQL Server:', err);
 });
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cors())
+
 
 // ------------------------------ API -----------------------------------------------------
 
@@ -187,6 +191,22 @@ app.get('/employee/count', async(req,res) => {
     console.log('error fetching data ',err)
   }
 });
+
+// fetching employee detail in jobcard
+// app.get('/jobcard/emp/data', async (req, res) => {
+//   try {
+//     // await pool.connect(config);
+//     const { empid } = req.body;
+//     const query = `
+//       select emp_name, contact from employee where emp_id = 1 
+//     `;
+//     const result = await pool.request().query(query);
+//     res.json(result.recordset);
+
+//   } catch (err) {
+//       console.log(err)
+//   }
+// })
 
 
 // Stock //
