@@ -89,9 +89,10 @@ app.post('/jobcard', async (req,res) => {
 
     const { 
       name, contact, email, address, custStatus, 
-      vehType, fuel, company, model, plate, kms,
+      vehType, fuel, company, model, plate, kms, vehicleStatus,serviceDate, 
       complains, reqService, compStatus, 
-      paymentStatus, paymentMethod, amount,
+      paymentStatus, paymentMethod, amount, 
+      parts
     } = req.body;
 
     const customer = `
@@ -103,25 +104,33 @@ app.post('/jobcard', async (req,res) => {
     const customer_id = customerResult.recordset[0].customer_id;
     
     const vehicle = `
-      insert into vehicle ( vehicle_type, fuel_type, company, vehicle_model, registration_no, KMs, customer_id ) 
+      insert into vehicle ( vehicle_type, fuel_type, company, vehicle_model, registration_no, KMs, customer_id, vehicle_status ) 
       output inserted.vehicle_id
-      values ( '${vehType}', '${fuel}', '${company}', '${model}', '${plate}', '${kms}', '${customer_id}' );
+      values ( '${vehType}', '${fuel}', '${company}', '${model}', '${plate}', '${kms}', '${customer_id}','${vehicleStatus}' );
     `;
     const vehicleResult = await pool.request().query(vehicle);
     const vehicle_id = vehicleResult.recordset[0].vehicle_id;
 
+
+    const date = `
+      insert into estimate ( est_date ) values( '${serviceDate}' );
+    `;
+    await pool.request().query(date);
+
     const complain = ` 
-      insert into complains ( complain, complain_status, vehicle_id, requested_service )
+      insert into complains ( complain, complain_status, vehicle_id, requested_service, required_parts )
       output inserted.complain_id
-      values ( '${complains}', '${compStatus}', '${vehicle_id}','${reqService} ');
+      values ( '${complains}', '${compStatus}', '${vehicle_id}','${reqService}', '${parts}' );
     `;
     await pool.request().query(complain);
+    
 
     const payment = `
       insert into payment ( payment_status, payment_type, amount )
       values ( '${paymentStatus}', '${paymentMethod}', '${amount}');
     `;
     await pool.request().query(payment);
+
 
   }catch(err){
     console.log(err)
