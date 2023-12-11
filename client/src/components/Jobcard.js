@@ -8,24 +8,12 @@ import Navbar from './Navbar';
 export default function Jobcard() {
   
   const details = {
-    // customer
-    name: '', address: '', contact: '', email: '', custStatus:'',
-
-    // vehicle
-    vehType: '', fuel: '', company: '', model: '', plate: '', kms: '',
-
-    // employee
-    empid: '', empName: '', empContact: '',
-
-    // complain
-    complains: '', reqService: '', compStatus: '',
-
-    // payment
-    paymentMethod: '', paymentStatus: '', amount: '',
-
-    //parts
-    partname: ''
-
+    name: '', address: '', contact: '', email: '', custStatus:'',     // customer
+    vehType: '', fuel: '', company: '', model: '', plate: '', kms: '', vehicleStatus: '', serviceDate: '',    // vehicle
+    empid: '', empName: '', empContact: '',     // employee
+    complains: '', reqService: '', compStatus: '',      // complain
+    paymentMethod: '', paymentStatus: '', amount: '',     // payment
+    parts: '',      //parts
   }
   const [data, setData] = useState(details)
   
@@ -67,14 +55,26 @@ export default function Jobcard() {
     }
   }
 
+  // onclick events of payment method to show inputs based on type
+  let ackNo = document.getElementById('ackNo')
+  const payInputs = () => {
+    if(ackNo.style.display === 'none') {
+      ackNo.style.display = 'block'
+    } else {
+      ackNo.style.display = 'none'
+    }
+  }
+
+
+
   return (
     <>
     <Navbar/>
 
     <div className="container jobcard">
       <h1 className='jobcard-title'><BsCreditCard2Front/> JobCard</h1> 
+
       <div className="jobcard-details">
-      
         <h5>Customer Details</h5> <hr />
         <div className="input-box">
           <div className="row">
@@ -203,14 +203,23 @@ export default function Jobcard() {
             </div> */}
 
             <div className="col">
-            <h6>Service status</h6>
+            <h6>Vehicle status</h6>
             <span>Current :</span>
-              <select name='vehicleStatus'>
-                <option value="1">Pending</option>
-                <option value="2">Complete</option>
+              <select name='vehicleStatus' value={data.vehicleStatus} onChange={handleChange}>
+                <option value="">Select Status</option>
+                <option value="1">Complete</option>
+                <option value="2">In-Work</option>
                 <option value="3">Delivered</option>
+                <option value="4">Pending</option>
               </select>
-            <span>Expected Completion Date :</span> <input type="date" /> 
+              
+            <span>Estimated Completion Date :</span> 
+            <input 
+              type="date" 
+              name='serviceDate'
+              value={data.serviceDate}
+              onChange={handleChange}
+            /> 
             </div>
           </div>
         </div>
@@ -292,23 +301,35 @@ export default function Jobcard() {
               </div> */}
               <div className="col">
                 <h6>Parts Required</h6>
-                <textarea cols="30" rows="8" name='parts' value={data.parts} onChange={handleChange}></textarea>
+                <textarea cols="30" rows="8" 
+                  name='parts' 
+                  value={data.parts} 
+                  onChange={handleChange}>
+                </textarea>
                 {/* <select name="/" >
                   <option value="">Select Part</option>
                   <option value=""></option>
                   <option value="">Select Part</option>
                   <option value="">Select Part</option>
                 </select> */}
+
               </div>
               <div className="col">
                 <h6>Payment</h6>
                 <span>Method :</span>
                   <select name='paymentMethod' vaule={data.paymentMethod} onChange={handleChange}>
                     <option value="">Select Method</option>
-                    <option value="Cash">Cash</option>
-                    <option value="UPI">UPI</option>
+                    <option value="Cash" >Cash</option>
+                    <option value="UPI" onClick={payInputs}>UPI</option>
                     <option value="Bank transfer">Bank Transfer</option>
                   </select>
+
+                {/* <span id='ackNo'>ACK_no : </span> */}
+                <input id='ackNo' type="text" />
+
+                <span id='accountNo'>Account no : </span>
+                <input id='accountNo' type="text" />
+
                 <span>Amount :</span> 
                 <input 
                   type="text" 
@@ -326,6 +347,16 @@ export default function Jobcard() {
             </div>
           </div>
           <button onClick={addData} className='savebtn'><BiSave/> Save</button>
+
+          <div className="jobcard-status">
+
+            <span>Jobcard Status : &nbsp;</span>
+              <select name="jobcardStatus" value={data.jobcardStatus} onChange={handleChange}>
+                <option value="">Select status</option>
+                <option value="1">Complete</option>
+                <option value="2">Incomplete</option>
+              </select>
+          </div>
       </div>
       <br /><br />
     </div>
