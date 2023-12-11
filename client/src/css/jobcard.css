@@ -113,3 +113,23 @@ input::-webkit-inner-spin-button {
   background-color: #00dfc4;
   color: #000;
 }
+
+.jobcard-status {
+  display: flex;
+  justify-content: end;
+}
+
+.jobcard-status select {
+  background-color: #1d2b3a;
+  color: #fff;
+  outline: none;
+  padding: 2px;
+  border: 1px solid #00dfc4;
+  border-radius: 5px;
+  margin: 0 0 10px 0;
+}
+
+/* onclick events of payment system */
+#ackNo, #accountNo {
+  display: none
+}
