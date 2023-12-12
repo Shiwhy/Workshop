@@ -88,11 +88,11 @@ app.post('/jobcard', async (req,res) => {
     await poolConnect;
 
     const { 
-      name, contact, email, address, custStatus, 
+      name, contact, email, address, custStatus, empid,
       vehType, fuel, company, model, plate, kms, vehicleStatus,serviceDate, 
       complains, reqService, compStatus, 
       paymentStatus, paymentMethod, amount, 
-      parts
+      parts, jobcardStatus
     } = req.body;
 
     const customer = `
@@ -111,7 +111,6 @@ app.post('/jobcard', async (req,res) => {
     const vehicleResult = await pool.request().query(vehicle);
     const vehicle_id = vehicleResult.recordset[0].vehicle_id;
 
-
     const date = `
       insert into estimate ( est_date ) values( '${serviceDate}' );
     `;
@@ -122,14 +121,25 @@ app.post('/jobcard', async (req,res) => {
       output inserted.complain_id
       values ( '${complains}', '${compStatus}', '${vehicle_id}','${reqService}', '${parts}' );
     `;
-    await pool.request().query(complain);
+    const complainResult = await pool.request().query(complain);
+    const complain_id = complainResult.recordset[0].complain_id;
     
 
     const payment = `
       insert into payment ( payment_status, payment_type, amount )
-      values ( '${paymentStatus}', '${paymentMethod}', '${amount}');
+      output inserted.payment_id
+      values ( '${paymentStatus}', '${paymentMethod}', '${amount}' );
     `;
-    await pool.request().query(payment);
+    const paymentResult = await pool.request().query(payment);
+    const payment_id = paymentResult.recordset[0].payment_id;
+
+    const jobcard = `
+      insert into jobcard (jobcard_date, jobcard_status, customer_id, employee_id, vehicle_id, complain_id, payment_id)
+      values( GETDATE(), '${jobcardStatus}', '${customer_id}', '${empid}', '${vehicle_id}', '${complain_id}', '${payment_id}')
+    `;
+    await pool.request().query(jobcard);
+
+
 
 
   }catch(err){
