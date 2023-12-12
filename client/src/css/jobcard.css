@@ -129,7 +129,10 @@ input::-webkit-inner-spin-button {
   margin: 0 0 10px 0;
 }
 
-/* onclick events of payment system */
-#ackNo, #accountNo {
-  display: none
+#emailError,
+#fillInput {
+  color: rgb(248, 55, 55);
+  font-weight: 700;
+  letter-spacing: 0.02rem;
+  display: none ;
 }
