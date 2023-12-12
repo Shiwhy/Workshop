@@ -14,6 +14,7 @@ export default function Jobcard() {
     complains: '', reqService: '', compStatus: '',      // complain
     paymentMethod: '', paymentStatus: '', amount: '',     // payment
     parts: '',      //parts
+    jobcardStatus: '' //jobcrd
   }
   const [data, setData] = useState(details)
   
@@ -21,51 +22,58 @@ export default function Jobcard() {
     setData({ ...data, [e.target.name]:e.target.value });
   }
 
+  let fillerror = document.getElementById('fillInput')
+  let emailError = document.getElementById('emailError')
   const addData = async () => {
-    try{
-        await axios.post('http://localhost:5001/jobcard', data, {
-        headers:{
-          "Content-Type": "application/json"
-        }
-      });
-      console.log(data)
-    }catch(err){
-      console.log(err)
-    }
-  }
-  
-
-  const getData = async () => {
-    try {
-      const response = await axios.post('http://localhost:5001/jobcard/employee', data, {
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-        
-      const { empName, empContact } = response.data;
-      setData({
-        ...data,
-        empName: empName,
-        empContact: empContact,
-      });
-
-    } catch (err) {
+    if (Object.values(data).some((value) => value === '')) {
+      fillerror.innerText = 'Please fill all the fields'
+      fillerror.style.display='block'
+      setTimeout(() => {
+        fillerror.style.display= 'none'
+      }, 5000)
+      return;
+    } 
+    else if (!data.email.includes('@') || !data.email.includes('.')) {
+      emailError.innerText = 'Email Must includes "@" and "."';
+      emailError.style.display = 'block'
+      setTimeout(() => {
+        emailError.style.display = 'none'
+      }, 3000)
+    } 
+    else {
+      try{
+          await axios.post('http://localhost:5001/jobcard', data, {
+          headers:{
+            "Content-Type": "application/json"
+          }
+        });
+        console.log(data)
+      }catch(err){
         console.log(err)
+      }
     }
+
   }
 
-  // onclick events of payment method to show inputs based on type
-  let ackNo = document.getElementById('ackNo')
-  const payInputs = () => {
-    if(ackNo.style.display === 'none') {
-      ackNo.style.display = 'block'
-    } else {
-      ackNo.style.display = 'none'
-    }
+  const getEmpData = async () => {
+      try {
+        const response = await axios.post('http://localhost:5001/jobcard/employee', data, {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+          
+        const { empName, empContact } = response.data;
+        setData({
+          ...data,
+          empName: empName,
+          empContact: empContact,
+        });
+  
+      } catch (err) {
+          console.log(err)
+      }
   }
-
-
 
   return (
     <>
@@ -102,6 +110,8 @@ export default function Jobcard() {
                 value={data.email}
                 onChange={handleChange}
               />
+              {/* validation */}
+              <p id="emailError"></p>
             </div>
 
             <div className="col">
@@ -181,26 +191,6 @@ export default function Jobcard() {
               />
 
             </div>
-            {/* <div className="col">
-              <span>Date of Vehicle Received :</span> 
-              <input 
-                type="date" 
-                name='receiveDate'
-              />
-
-              <span>Completion Date :</span> 
-              <input 
-                type="date"
-                name='completionDate' 
-              />
-
-              <span>Delivery Date :</span> 
-              <input 
-                type="date" 
-                name='deliveryDate'
-              />
-
-            </div> */}
 
             <div className="col">
             <h6>Vehicle status</h6>
@@ -270,7 +260,7 @@ export default function Jobcard() {
                   value={data.empid}
                   onChange={handleChange}
                 />
-                <button className='empdetail' onClick={getData}>Get</button>
+                <button className='empdetail' onClick={getEmpData}>Get</button>
 
                 <span>Name :</span> 
                 <input readOnly
@@ -289,16 +279,7 @@ export default function Jobcard() {
                 />
 
               </div>
-              {/* <div className="col">
-                <h6>Service status</h6>
-                <span>Current :</span>
-                  <select name='vehicleStatus'>
-                    <option value="1">Pending</option>
-                    <option value="2">Complete</option>
-                    <option value="3">Delivered</option>
-                  </select>
-                <span>Expected Completion Date :</span> <input type="date" /> 
-              </div> */}
+
               <div className="col">
                 <h6>Parts Required</h6>
                 <textarea cols="30" rows="8" 
@@ -306,37 +287,26 @@ export default function Jobcard() {
                   value={data.parts} 
                   onChange={handleChange}>
                 </textarea>
-                {/* <select name="/" >
-                  <option value="">Select Part</option>
-                  <option value=""></option>
-                  <option value="">Select Part</option>
-                  <option value="">Select Part</option>
-                </select> */}
-
               </div>
+
               <div className="col">
                 <h6>Payment</h6>
+
                 <span>Method :</span>
-                  <select name='paymentMethod' vaule={data.paymentMethod} onChange={handleChange}>
+                  <select id='pymentDD' name='paymentMethod' value={data.paymentMethod} onChange={handleChange}>
                     <option value="">Select Method</option>
-                    <option value="Cash" >Cash</option>
-                    <option value="UPI" onClick={payInputs}>UPI</option>
-                    <option value="Bank transfer">Bank Transfer</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Cheque">Cheque</option>
                   </select>
 
-                {/* <span id='ackNo'>ACK_no : </span> */}
-                <input id='ackNo' type="text" />
-
-                <span id='accountNo'>Account no : </span>
-                <input id='accountNo' type="text" />
-
                 <span>Amount :</span> 
-                <input 
-                  type="text" 
-                  name='amount'
-                  value={data.amount}
-                  onChange={handleChange}
-                />
+                  <input 
+                    type="text" 
+                    name='amount'
+                    value={data.amount}
+                    onChange={handleChange}
+                  />
+                  
                 <span>Status :</span> 
                   <select name='paymentStatus' value={data.paymentStatus} onChange={handleChange}>
                     <option value="">Select status</option>
@@ -347,9 +317,9 @@ export default function Jobcard() {
             </div>
           </div>
           <button onClick={addData} className='savebtn'><BiSave/> Save</button>
+          <p id="fillInput"></p>
 
           <div className="jobcard-status">
-
             <span>Jobcard Status : &nbsp;</span>
               <select name="jobcardStatus" value={data.jobcardStatus} onChange={handleChange}>
                 <option value="">Select status</option>
