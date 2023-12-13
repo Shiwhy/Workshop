@@ -22,35 +22,45 @@ export default function Jobcard() {
     setData({ ...data, [e.target.name]:e.target.value });
   }
 
-  let fillerror = document.getElementById('fillInput')
-  let emailError = document.getElementById('emailError')
+  
   const addData = async () => {
+    let fillerror = document.getElementById('fillInput');
+    let emailError = document.getElementById('emailError');
+
     if (Object.values(data).some((value) => value === '')) {
-      fillerror.innerText = 'Please fill all the fields'
-      fillerror.style.display='block'
+      fillerror.innerText = 'Please fill all the fields';
+      fillerror.style.display='block';
+
       setTimeout(() => {
-        fillerror.style.display= 'none'
-      }, 5000)
+        fillerror.style.display= 'none';
+      }, 5000);
+      // alert("fill all fields")
       return;
     } 
     else if (!data.email.includes('@') || !data.email.includes('.')) {
       emailError.innerText = 'Email Must includes "@" and "."';
       emailError.style.display = 'block'
-      setTimeout(() => {
-        emailError.style.display = 'none'
-      }, 3000)
+      // setTimeout(() => {
+      //   emailError.style.display = 'none'
+      // }, 3000)
     } 
     else {
       try{
-          await axios.post('http://localhost:5001/jobcard', data, {
+
+        await axios.post('http://localhost:5001/jobcard', data, {
           headers:{
             "Content-Type": "application/json"
           }
         });
-        console.log(data)
+
       }catch(err){
         console.log(err)
       }
+      fillerror.innerText = 'Data Added Successfully';
+      fillerror.style.display = 'block'
+      setTimeout(() => {
+        fillerror.style.display = 'none'
+      }, 5000);
     }
 
   }
@@ -317,7 +327,7 @@ export default function Jobcard() {
             </div>
           </div>
           <button onClick={addData} className='savebtn'><BiSave/> Save</button>
-          <p id="fillInput"></p>
+          <p id="fillInput">Please fill all the fields</p>
 
           <div className="jobcard-status">
             <span>Jobcard Status : &nbsp;</span>
