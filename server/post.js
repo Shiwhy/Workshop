@@ -112,9 +112,12 @@ app.post('/jobcard', async (req,res) => {
     const vehicle_id = vehicleResult.recordset[0].vehicle_id;
 
     const date = `
-      insert into estimate ( est_date ) values( '${serviceDate}' );
+      insert into estimate ( est_date ) 
+      output inserted.est_id
+      values( '${serviceDate}' );
     `;
-    await pool.request().query(date);
+    const estResult = await pool.request().query(date);
+    const est_id = estResult.recordset[0].est_id;
 
     const complain = ` 
       insert into complains ( complain, complain_status, vehicle_id, requested_service, required_parts )
@@ -135,11 +138,20 @@ app.post('/jobcard', async (req,res) => {
 
     const jobcard = `
       insert into jobcard (jobcard_date, jobcard_status, customer_id, employee_id, vehicle_id, complain_id, payment_id)
+      output inserted.jobcard_id
       values( GETDATE(), '${jobcardStatus}', '${customer_id}', '${empid}', '${vehicle_id}', '${complain_id}', '${payment_id}')
     `;
-    await pool.request().query(jobcard);
+    const jobcardResult = await pool.request().query(jobcard);
+    const jobcard_id = jobcardResult.recordset[0].jobcard_id;
 
 
+    // jobcrd_id into estimate table 
+    const updateEst = `
+      update estimate 
+      set jobcard_id = '${jobcard_id}' 
+      where est_id = '${est_id}'
+    `;
+    await pool.request().query(updateEst);
 
 
   }catch(err){
@@ -171,6 +183,16 @@ app.post('/jobcard/employee', async(req,res) => {
   }catch(err){
     console.log(err)
   }
+});
+
+app.post('/invoice', async (req, res) => {
+  const { invDate } = req.body; 
+
+  const invoiceDate = `
+    insert into payment ( invoice_date )
+    values ( '${invDate}' );
+  `;
+  await pool.request().query(invoiceDate)
 });
 
 
