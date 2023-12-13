@@ -5,6 +5,7 @@ import { RiDeleteBinLine } from 'react-icons/ri';
 import { LiaFileInvoiceDollarSolid } from 'react-icons/lia';
 import { BiSave } from 'react-icons/bi';
 import Navbar from './Navbar';
+import axios from 'axios'
 
 export default function Invoice() {
 
@@ -12,14 +13,14 @@ export default function Invoice() {
   const [rows, setRows] = useState([
     {
       id: 1,
-      parts: <input type="text" className='input-1'/>, 
+      parts: <input type="text" className='input-1' />, 
       quantity: <input type="text" className='input-2' />,
       price: <input type="text" className='input-2' />,
       amount: <input type="text" className='input-2' />,
     },
     {
       id: 2,
-      parts: <input type="text" className='input-1'/>,
+      parts: <input type="text" className='input-1' />,
       quantity: <input type="text" className='input-2' />,
       price: <input type="text" className='input-2' />,
       amount: <input type="text" className='input-2' />,
@@ -42,6 +43,27 @@ export default function Invoice() {
     const updatedRows = rows.filter((row) => row.id !== id);
     setRows(updatedRows);
   };
+
+  const inv = {
+    date:'', plate:'',
+  }
+  const [invData, setInvData] = useState(inv);
+
+  const handleChange = (e) => {
+    setInvData({ ...invData, [e.target.name]:e.target.value });
+  };
+
+  const addData = async () => {
+    try {
+      await axios.post('http://localhost:5001/invoice', invData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
 
   return (
@@ -71,9 +93,15 @@ export default function Invoice() {
           </div>
         <div className="col">
           <div className="calender">
-            <span>Date : </span> <input type="date" /> <br />
+            <span>Date : </span> 
+            <input 
+              type="date" 
+              name='date' 
+              value={invData.date} 
+              onChange={handleChange}
+            /> <br />
           </div>
-          <div className="dropdown">
+          {/* <div className="dropdown">
             <span>Day : </span>
               <select>
                 <option value="">Select a day</option>
@@ -85,25 +113,42 @@ export default function Invoice() {
                 <option value="6">Friday</option>
                 <option value="7">Saturday</option>
               </select>
-          </div>
+          </div> */}
         </div>
         </div>
                   <hr />
         <div className="container invoice-details">
           <div className="customer-details">
             <div className="row">
+
               <div className="col">
                 <span>Customer : </span> &nbsp;
-                <input type="text" /> <br /><br />
-                <span>Address : </span> &nbsp;
-                <input type="text" />
+                  <input type="text" 
+                    name='customer'
+                    value={invData.customer}
+                    onChange={handleChange}
+                  /> <br /><br />
+                {/* <span>Address : </span> &nbsp;
+                  <input type="text"
+                    name='address'
+                    value={invData.address}
+                  
+                  /> */}
               </div>
+
               <div className="col">
                 <span>Invoice Number : </span> &nbsp;
-                <input type="text" /> <br /><br />
+                  <input type="text" 
+                  /> <br /><br />
+
                 <span>Vehicle Plate_no : </span> &nbsp;
-                <input type=" text" />     
+                  <input type=" text" 
+                    name='plate'
+                    value={invData.plate}
+                    onChange={handleChange}
+                  />     
               </div>
+
             </div>
           </div>  
         </div>
@@ -112,9 +157,9 @@ export default function Invoice() {
           <table>
             <thead>
               <tr>
-                <th>Description</th>
-                <th>Quantity</th>
-                <th>Price</th>
+                <th>Description (part/service)</th>
+                <th>Quantity (if part)</th>
+                <th>Unit Price (if part)</th>
                 <th>Amount</th>
               </tr>
             </thead>
@@ -141,7 +186,7 @@ export default function Invoice() {
             </div>
           </div>
         </div>
-        <button className='savebtn'><BiSave/> Save</button>
+        <button className='savebtn' onClick={addData}><BiSave/> Save</button>
       </div>
       <br /><br />
     </div>
