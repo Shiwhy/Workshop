@@ -1,6 +1,8 @@
 import React,{useEffect,useState} from 'react'
 import axios from 'axios'
 
+
+import {TbTruckDelivery} from 'react-icons/tb'
 const Delivery = () => {
 
   const [delivery,setdelivery] = useState([])
@@ -15,6 +17,9 @@ const Delivery = () => {
 
   return (
     <>
+    <div className="heading-div">
+      <p className="heading">< TbTruckDelivery/> Delivery</p>
+    </div>
     <div className="mainDivision">
       {delivery.map((deliveryData) => {
         return <div className="view" key={deliveryData.vehicle_id}>

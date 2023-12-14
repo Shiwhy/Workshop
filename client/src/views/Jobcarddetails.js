@@ -4,19 +4,20 @@ import axios from 'axios'
 
 const Jobcarddetails = () => {
 
-const [jobcard,setjobcard] = useState([])
+  const [jobcard,setjobcard] = useState([])
 
-useEffect (() => {
-  axios.get('http://localhost:5000/jobcard')
-  .then((res) => {
-    setjobcard(res.data);
-  })
-},[])
+  useEffect (() => {
+    axios.get('http://localhost:5000/jobcard')
+    .then((res) => {
+      setjobcard(res.data);
+    })
+  },[])
 
   return (
     <>
-    {jobcard.map((jobcard) => {
-       return <div className="view" key={jobcard.jobcard_id}>
+    <div className="mainDivision">
+      {jobcard.map((jobcard) => {
+        return <div className="view" key={jobcard.jobcard_id}>
           <div className="view-card" >
             <p className="plate">{jobcard.registration_no}</p>
             <p>
@@ -37,9 +38,9 @@ useEffect (() => {
             <p>
               <span>Complain :&nbsp; </span> {jobcard.complain}
             </p>
-            <p>
+            {/* <p>
               <span>Part :&nbsp; </span> {jobcard.part_name}
-            </p>
+            </p> */}
             <p>
               <span>Payment :&nbsp; </span> {jobcard.value}
             </p>
@@ -47,8 +48,9 @@ useEffect (() => {
               <span>Invoice :&nbsp; </span> {jobcard.invoice_no}
             </p>
           </div>
-       </div>
-    })}
+        </div>
+      })}
+      </div>
     </>
   )
 }

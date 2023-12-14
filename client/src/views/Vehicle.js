@@ -1,6 +1,8 @@
 import React,{useEffect,useState} from 'react'
 import axios from 'axios'
 
+import { IoCarSportSharp } from "react-icons/io5";
+
 
 const Vehicle = () => {
 
@@ -15,6 +17,9 @@ const Vehicle = () => {
 
   return (
     <>
+      <div className="heading-div">
+        <p className="heading"><IoCarSportSharp/> Vehicle</p>
+      </div>
     <div className="mainDivision">
 
       {vehicle.map((vehicle) => {
@@ -31,6 +36,12 @@ const Vehicle = () => {
             <p><span>Vehicle: </span> {vehicle.value}</p>
           </div>
         </div>
+
+        // return <div className="view" key={vehicle.vehicle_id}>
+        //   <div className="view-card">
+        //     <p className="plate">{vehicle.registration_no}</p>
+        //   </div>
+        // </div>
 
       })}
     </div>

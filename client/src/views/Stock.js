@@ -1,6 +1,8 @@
 import React,{useEffect,useState} from 'react'
 import axios from 'axios'
 
+import { TbSettingsCog } from 'react-icons/tb'
+
 const Stock = () => {
 
 
@@ -14,6 +16,9 @@ useEffect (() => {
 },[])
   return (
     <>
+    <div className="heading-div">
+      <p className="heading"><TbSettingsCog/> Stock</p>
+    </div>
     <div className="mainDivision">
       {stock.map((parts) => {
         return <div className="view" key={parts.part_id}>

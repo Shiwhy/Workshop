@@ -1,6 +1,9 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 
+// Icon
+import { HiUsers } from "react-icons/hi";
+
 const Users = () => {
   const [users, setUsers] = useState([])
   
@@ -13,7 +16,9 @@ const Users = () => {
 
   return (
     <>
-    <h1>Users</h1>
+     <div className="heading-div">
+        <p className="heading"><HiUsers/> Customers</p>
+      </div>
     <div className="mainDivision">
 
     {users.map((customer) => {

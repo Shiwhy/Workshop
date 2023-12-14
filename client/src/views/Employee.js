@@ -1,6 +1,8 @@
 import React,{useEffect,useState} from 'react'
 import axios from 'axios'
 
+import { MdEngineering } from "react-icons/md";
+
 const Employee = () => {
 
   const  [emp,setemp] = useState([])
@@ -13,11 +15,18 @@ const Employee = () => {
   })
   return (
     <>
+    <div className="heading-div">
+      <p className="heading"><MdEngineering/> Employee</p>
+    </div>
+    
     <div className="mainDivision">
 
       {emp.map((employee) =>{
         return <div className="view" key={employee.emp_id}>
           <div className="view-card">
+            <p className='plate'>
+              {employee.designation}
+            </p>
             <p>
               <span>Name :&nbsp; </span>{employee.emp_name}
             </p>
@@ -35,9 +44,6 @@ const Employee = () => {
             </p>
             <p>
               <span>Bank Account :&nbsp; </span>{employee.bank_acc}
-            </p>
-            <p>
-              <span>Designation :&nbsp; </span>{employee.designation}
             </p>
           </div>
         </div>

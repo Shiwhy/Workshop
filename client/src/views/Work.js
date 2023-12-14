@@ -1,6 +1,8 @@
 import React,{useEffect,useState} from 'react'
 import axios from 'axios'
 
+import {MdPendingActions} from 'react-icons/md';
+
 const Work = () => {
 
   const [work,setwork] = useState([])
@@ -13,6 +15,10 @@ const Work = () => {
   }, [])
   return (
     <>
+    <div className="heading-div">
+      <p className="heading"><MdPendingActions/>  Pending Work</p>
+    </div>
+    
     <div className="mainDivision">
       {work.map((pendingWork) => {
         return <div className='view' key={pendingWork.vehicle_id}>
