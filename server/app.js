@@ -71,7 +71,7 @@ app.get('/vehicle/count', async (req, res) => {
 
 app.get('/vehicle/pending/work', async (req, res) => {
   try{
-    const result = await pool.request().query('select count(*) as pendingWork from vehicle where vehicle_status = 4;')
+    const result = await pool.request().query('select count(*) as pendingWork from vehicle where vehicle_status in (2, 4);')
     res.json(result.recordset) 
   }catch(err){
     console.log('error fetching data',err)
@@ -131,7 +131,7 @@ app.get('/vehicle/pending/getwork', async (req,res) => {
       join fuel on vehicle.fuel_type = fuel.fuel_id
       join customer on vehicle.customer_id = customer.customer_id
       join vehicle_status on vehicle_status.status_id = vehicle.vehicle_status
-      where (vehicle_status = 2 or vehicle_status = 4);
+      where vehicle_status in (2,4);
     `;
     const result = await pool.request().query(query)
     res.json(result.recordset)
@@ -149,12 +149,12 @@ app.get('/customer', async (req, res) => {
         customer.contact,
         customer.Address,
         customer.email,
-        customer_status.value,
+        customer_status.value as customerStatus,
         vehicle.registration_no,
         vehicle.vehicle_model
-      from customer 
-      join customer_status on customer.customer_status = customer_status.status_id
-      join vehicle on vehicle.vehicle_id = customer.customer_id
+      from customer
+      join vehicle on vehicle.customer_id = customer.customer_id
+      join customer_status on customer.customer_status = customer_status.status_id;
     `;
     const result = await pool.request().query(query);
     res.json(result.recordset)
@@ -234,25 +234,25 @@ app.get('/jobcard', async (req, res) => {
   try{
     const query = `
       select jobcard.jobcard_id,
-        jobcard.jobcard_date,
+        jobcard.jobcard_date, 
         jobcard_status.value as jobcardStatus,
         customer.customer_name,
         employee.emp_name,
         vehicle.vehicle_model,
+        vehicle.registration_no,
         complains.complain,
-        parts.part_name,
-        payment_status.value,
-        payment.invoice_no,
-        vehicle.registration_no
+        payment.amount,
+        payment.payment_status,
+        payment.invoice_name,
+        payment.invoice_date
       from jobcard
       join jobcard_status on jobcard_status.status_id = jobcard.jobcard_status
       join customer on customer.customer_id = jobcard.customer_id
       join employee on employee.emp_id = jobcard.employee_id
       join vehicle on vehicle.vehicle_id = jobcard.vehicle_id
       join complains on complains.complain_id = jobcard.complain_id
-      join parts on parts.part_id = jobcard.part_id
-      join payment on payment.payment_id = jobcard.payment_id
-      join payment_status on payment_status.status_id = jobcard.payment_id
+      join payment on payment.payment_id = jobcard.payment_id;
+
     `;
     const result = await pool.request().query(query)
     res.json(result.recordset)

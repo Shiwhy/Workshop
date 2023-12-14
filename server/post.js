@@ -129,9 +129,9 @@ app.post('/jobcard', async (req,res) => {
     
 
     const payment = `
-      insert into payment ( payment_status, payment_type, amount )
+      insert into payment ( payment_status, payment_type, amount, customer_id, vehicle_id )
       output inserted.payment_id
-      values ( '${paymentStatus}', '${paymentMethod}', '${amount}' );
+      values ( '${paymentStatus}', '${paymentMethod}', '${amount}', '${customer_id}', '${vehicle_id}' );
     `;
     const paymentResult = await pool.request().query(payment);
     const payment_id = paymentResult.recordset[0].payment_id;
