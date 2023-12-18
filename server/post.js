@@ -185,17 +185,21 @@ app.post('/jobcard/employee', async(req,res) => {
   }
 });
 
-app.post('/invoice', async (req, res) => {
-  const { invDate } = req.body; 
 
-  const invoiceDate = `
-    insert into payment ( invoice_date )
-    values ( '${invDate}' );
+
+// add employee 
+app.post('/addemp', async (req,res) => {
+  await poolConnect;
+  const { e_name, e_email, e_contact, e_address, e_salary, e_bank_acc, e_designation } = req.body;
+
+  const query = `
+    insert into employee ( emp_name, contact, address, salary, email, bank_acc, designation )
+    values( '${e_name}', '${e_contact}', '${e_address}', '${e_salary}', '${e_email}', '${e_bank_acc}', '${e_designation}' );
   `;
-  await pool.request().query(invoiceDate)
+  await pool.request().query(query)
+  res.status(200).json({ message: 'Data Added Succesfully' });
+
 });
-
-
 
 
 
