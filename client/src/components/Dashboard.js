@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import '../css/dashboard.css';
 import Navbar from '../components/Navbar'
 import DashboardProps from '../Utils/DashboardProps';
-import axios from 'axios';
+// import axios from 'axios';
 
 
 
@@ -18,11 +18,11 @@ import { HiCurrencyRupee } from 'react-icons/hi';
 
 export default function Dashboard() {
 
-  const [vehicleData, setVehicleData] = useState([])
+  // const [vehicleData, setVehicleData] = useState([])
 
   const [customer, setCustomer] = useState(0)
   const [emp, setEmp] = useState(0)
-  // const [vehicle, setVehicle] = useState(0)
+  const [vehicle, setVehicle] = useState(0)
   const [pendingWork,setPendingWork] = useState(0)
   const [pendingDelivery, setPendingDelivery] = useState(0)
   const [totalStock, setTotalStock] = useState(0)
@@ -34,10 +34,10 @@ export default function Dashboard() {
       try{
 
         // vehicle
-        // let vehicle = await fetch('http://localhost:5000/vehicle/count')
-        // let vehicleData = await vehicle.json()
-        // let vehicleCount = vehicleData[0].count
-        // setVehicle(vehicleCount)
+        let vehicle = await fetch('http://localhost:5000/vehicle/count')
+        let vehicleData = await vehicle.json()
+        let vehicleCount = vehicleData[0].count
+        setVehicle(vehicleCount)
 
         // customer
         let customer = await fetch('http://localhost:5000/customer/count')
@@ -88,11 +88,11 @@ export default function Dashboard() {
         let jobcardCounter = jobcardCountData[0].count
         setJobcardCount(jobcardCounter)
 
-        axios.get('http://localhost:5000/vehicle/count')
-        .then((res) => {
-          console.log(res)
-          setVehicleData(res.data)
-        });
+        // axios.get('http://localhost:5000/vehicle/count')
+        // .then((res) => {
+        //   console.log(res)
+        //   setVehicleData(res.data)
+        // });
         
       } catch(err){
         console.log('Error fetching data: ', err)
@@ -128,10 +128,10 @@ export default function Dashboard() {
             <div className="container">
               <div className="row">                               {/* ------------------------ First Row */}
                 <div className="col">
-                  <DashboardProps path='/vehicleview'  icon={<IoCarSport/>} title='Total Vehicles' value={ vehicleData.map((data) => {return data.count}) } />
+                  <DashboardProps path='/vehicleview'  icon={<IoCarSport/>} title='Total Vehicles' value={ vehicle } />
                 </div>
                 <div className="col">
-                  <DashboardProps  path='/usersview' icon={<PiUsersThreeFill/>} title='Total Users' value={ customer }/> 
+                  <DashboardProps  path='/usersview' icon={<PiUsersThreeFill/>} title='Total Customers' value={ customer }/> 
                 </div>
                 <div className="col">
                   <DashboardProps path='/empview' icon={<MdEngineering/>} title='Total Employees' value={ emp } />

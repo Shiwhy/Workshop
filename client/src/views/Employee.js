@@ -1,4 +1,5 @@
 import React,{useEffect,useState} from 'react'
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 
 import { MdEngineering } from "react-icons/md";
@@ -12,12 +13,20 @@ const Employee = () => {
     .then((res) => {
       setemp(res.data)
     }) 
-  })
+  });
+
+  const navigate = useNavigate()
+  const addemp = () => {
+    navigate('/addemp')
+  } 
+
   return (
     <>
     <div className="heading-div">
       <p className="heading"><MdEngineering/> Employee</p>
+      <button className='addbtn' onClick={addemp}> Add Employee</button>
     </div>
+
     
     <div className="mainDivision">
 

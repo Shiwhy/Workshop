@@ -5,7 +5,6 @@ import { RiDeleteBinLine } from 'react-icons/ri';
 import { LiaFileInvoiceDollarSolid } from 'react-icons/lia';
 import { BiSave } from 'react-icons/bi';
 import Navbar from './Navbar';
-import axios from 'axios'
 
 export default function Invoice() {
 
@@ -44,38 +43,14 @@ export default function Invoice() {
     setRows(updatedRows);
   };
 
-  const inv = {
-    date:'', plate:'',
-  }
-  const [invData, setInvData] = useState(inv);
-
-  const handleChange = (e) => {
-    setInvData({ ...invData, [e.target.name]:e.target.value });
-  };
-
-  const addData = async () => {
-    try {
-      await axios.post('http://localhost:5001/invoice', invData, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-
   return (
     <>
     <Navbar/>
-
-
     
     <div className="invoice">
       <div className="container">
         <h1 className="invoice-title">
-        <LiaFileInvoiceDollarSolid/> Invoice
+          <LiaFileInvoiceDollarSolid/> Invoice
         </h1>
       </div>
       
@@ -97,23 +72,9 @@ export default function Invoice() {
             <input 
               type="date" 
               name='date' 
-              value={invData.date} 
-              onChange={handleChange}
+          
             /> <br />
           </div>
-          {/* <div className="dropdown">
-            <span>Day : </span>
-              <select>
-                <option value="">Select a day</option>
-                <option value="1">Sunday</option>
-                <option value="2">Monday</option>
-                <option value="3">Tuesday</option>
-                <option value="4">Wednesday</option>
-                <option value="5">Thursday</option>
-                <option value="6">Friday</option>
-                <option value="7">Saturday</option>
-              </select>
-          </div> */}
         </div>
         </div>
                   <hr />
@@ -125,8 +86,7 @@ export default function Invoice() {
                 <span>Customer : </span> &nbsp;
                   <input type="text" 
                     name='customer'
-                    value={invData.customer}
-                    onChange={handleChange}
+         
                   /> <br /><br />
                 {/* <span>Address : </span> &nbsp;
                   <input type="text"
@@ -144,8 +104,7 @@ export default function Invoice() {
                 <span>Vehicle Plate_no : </span> &nbsp;
                   <input type=" text" 
                     name='plate'
-                    value={invData.plate}
-                    onChange={handleChange}
+
                   />     
               </div>
 
@@ -186,7 +145,7 @@ export default function Invoice() {
             </div>
           </div>
         </div>
-        <button className='savebtn' onClick={addData}><BiSave/> Save</button>
+        <button className='savebtn'><BiSave/> Save</button>
       </div>
       <br /><br />
     </div>

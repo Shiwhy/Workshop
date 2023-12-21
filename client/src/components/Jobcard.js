@@ -44,6 +44,13 @@ export default function Jobcard() {
       //   emailError.style.display = 'none'
       // }, 3000)
     } 
+    else if (data.contact.length < 10 || data.contact.length > 10) {
+      fillerror.innerText = 'Please enter 10 digit contact number';
+      fillerror.style.display = 'block';
+      setTimeout (() => {
+        fillerror.style.display = 'none';
+      }, 5000);
+    } 
     else {
       try{
 
@@ -105,9 +112,10 @@ export default function Jobcard() {
                 onChange={handleChange}
               /> 
 
-              <span>Contact :</span> <span className='thumbnail'>(only numbers)</span>
+              <span>Contact :</span> <span className='thumbnail'></span>
               <input 
                 type="number" 
+                placeholder='only numbers'
                 name='contact'
                 value={data.contact}
                 onChange={handleChange}
@@ -192,9 +200,10 @@ export default function Jobcard() {
                 value={data.plate}
               />
 
-              <span>KmS Travelled :</span> <span className="thumbnail">(only numbers)</span>
+              <span>KmS Travelled :</span> <span className="thumbnail"></span>
               <input 
                 type="number" 
+                placeholder='only numbers'
                 onChange={handleChange}
                 name='kms'
                 value={data.kms}
@@ -264,8 +273,9 @@ export default function Jobcard() {
                 <h6>Employee Assigned </h6>
                 <span>ID :</span> 
                 <input 
-                  type="text" 
+                  type="number" 
                   className='empid'
+                  placeholder='ID number'
                   name='empid'
                   value={data.empid}
                   onChange={handleChange}
@@ -311,8 +321,9 @@ export default function Jobcard() {
 
                 <span>Amount :</span> 
                   <input 
-                    type="text" 
+                    type="number" 
                     name='amount'
+                    placeholder='only numbers'
                     value={data.amount}
                     onChange={handleChange}
                   />
