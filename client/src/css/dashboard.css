@@ -11,9 +11,6 @@
   color: #fff;
   /* height: 80px; */
   width: max-content;
-  margin: 3vh 0 1vh 0;
-  border-bottom: 1px solid #fff;
-
 }
 
 .dashboard a {
@@ -21,7 +18,7 @@
 }
 
 .card {
-  width: 250px;
+  width: 16vmax;
   padding: 5px;
   position: relative;
   /* color: #e0cfcf; */
@@ -61,7 +58,7 @@
   height: 35px;
 }
 
-.dash-slogan {
+.dashboard-slogan {
   margin-top: 10vw;
   display: flex;
   justify-content: center;
@@ -74,7 +71,7 @@
   font-weight: 800;
 }
 
-.dash-slogan p {
+.dashboard-slogan p {
   font-family: 'Barlow', serif;
   font-size: 2.3rem;
   letter-spacing: .1rem;

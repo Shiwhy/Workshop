@@ -2,24 +2,24 @@
 
 .home-page {
   color: #fff;
-  background-color: rgba(0, 0, 0, 0.1);
+  /* background-color: rgba(0, 0, 0, 0.1); */
   transition: 0.3s;
   font-weight: 500;
 }
 
-.first-page {
-  font-family: 'Archivo Black',sans-serif;
+.home-first-page {
   /* color: #fff; */
   /* border: 1px solid #fff; */
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  /* border-radius: 10px; */
+  /* display: flex; */
+  /* justify-content: center; */
+  /* align-items: center; */
   text-align: center;
   width: 100%;
 }
 
 .main-heading {
+  font-family: 'Archivo Black',sans-serif;
   background: transparent;
   font-size: 10vw;
   background: -webkit-linear-gradient(315deg, #e9bcb7 0%, #29524a 74%);
@@ -37,16 +37,17 @@
   }
 }
 
-.second-page {
+.home-second-page {
   color: #fff;
   position: relative;
+
 }
 
-.second-page h1 {
+.home-second-page h1 {
   width: 100%;
   
 }
-.second-page h1::after {
+.home-second-page h1::after {
   content: '';
   position: relative;
   width: 10%;
@@ -60,6 +61,12 @@
 .first-image,
 .second-image {
   margin: 3.5vh  0 0 0;
+  font-size: 2vw;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.first-image .row{
 }
 
 .homeMechanic,
@@ -68,14 +75,18 @@
   width: 40vw;
 }
 
-.second-page-text {
+.home-second-page-text {
   color: #fff;
   text-align: justify;
+  /* height: 20vmax; */
+  font-size: 1.2vw;
+  background-color: red;
 }
 
-.down {
-  margin: 4vh 0 0 0;
+.home-second-page-text p {
+  font-size: 1rem;
 }
+
 
 .services {
   color: #fff;
@@ -102,31 +113,4 @@
 } 
 
 
-/* ---- Media Queries ---- */
 
-@media (max-width: 1200px) {
-  .second-page-text {
-    font-size: 1.3vw;
-  }
-  
-  .homeMechanic2 {
-    height: 26vw;
-  }
-  
-  .second-page h1 {
-    font-size: 2.8vw;
-  }
-
-  .service-box {
-    font-size: 3vw;
-    margin: 1vw;
-    padding: 1vw;
-  }
-
-  .service-box .service-title{
-    font-size: 3vw;
-  }
-
-  
-}
-/* ---- x Media Queries x ---- */

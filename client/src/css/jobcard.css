@@ -91,9 +91,7 @@ input::-webkit-inner-spin-button {
     display: none; 
 }
 
-.thumbnail {
-  font-size: 0.9vw;
-}
+
 
 .input-box .empid {
   width: 11vw;
@@ -116,7 +114,8 @@ input::-webkit-inner-spin-button {
 
 .jobcard-status {
   display: flex;
-  justify-content: end;
+  /* justify-content: end; */
+  justify-content: flex-end;
 }
 
 .jobcard-status select {

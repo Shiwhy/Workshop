@@ -1,4 +1,5 @@
-.form {
+.login-form,
+.signup-form {
   color: #fff;
   background-color: #0438358f;
   width: max-content;

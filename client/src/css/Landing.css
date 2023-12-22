@@ -3,41 +3,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&display=swap');
 
 
-.main{
-  /* background-color: red; */
+.landing-main{
   padding: 5vw;
-  margin-top: 5%;
+  transform: translateY(10vmin);
   display: flex;
   flex-direction: column;
   gap: 1vw;
   align-items: center;
-  position: inherit;
-}
-/* .cover {
-  background-color: rgba(54, 54, 54, 0.884);
-  width: 40vw;
-  height: 30vh;
-  border-radius: 0 100px ;
-  border-bottom: 4px solid #fff;
-  border-right: 4px solid #fff; 
-  position: absolute;
-  z-index: 1;
-} */
+  font-size: 2vw;
+} 
 
-.pin {
-  height: 25px;
-  width: 25px;
-  margin-top: 2vh;
-  background-color: #fff;
-  border-radius: 50%;
-  position: absolute;
-  left: 29vw;
-  z-index: 1;
-  animation: bounce 1.5s;
-}
-
-.cover-page {
-  /* background: linear-gradient(to right, #132831, #305764d7, #213e4bb2); */
+.landing-cover-page {
   background: linear-gradient(to right, #132831, #234049ee, #162c36b2);
   width: 45vw;
   padding: 2vw;
@@ -51,27 +27,27 @@
   border-bottom: 4px solid #fff;
 }
 
-.logoCar img {
+.landing-logoCar img {
   width: 25vw;
   margin-top: .8vw;
   margin-left: 0.5vw;
   z-index: 1;
-  position: relative;
+  /* position: relative; */
 }
 
-.logoText img {
+.landing-logoText img {
   width: 30vw;
   z-index: 1;
-  position: relative
+  /* position: relative */
 }
 
-.links {
+.landing-links {
   display: flex;
   margin-top: 3vw;
   gap: 3vw;
 }
 
-.links a {
+.landing-links a {
   color: #fff;
   text-decoration: none;
   font-size: 1.1rem;
@@ -83,17 +59,16 @@
   font-family: 'Hedvig Letters Serif', serif;
 }
 
-.links a:hover {
+.landing-links a:hover {
   background: linear-gradient(to right, #132831, #305764d7, #213e4bb2);
 }
 
-.slogan {
+.landing-slogan {
   margin-top: 2vw;
   color: rgb(21, 216, 216);
   margin-left: 1.5vw;
-  font-size: 2.5rem;
+  font-size: 3vmax;
   letter-spacing: 0.1rem;
-  /* font-family: 'M PLUS 1p', sans-serif; */
   font-family: 'M Plus 1', serif;
   font-weight: 700;
   
