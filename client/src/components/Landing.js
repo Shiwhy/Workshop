@@ -12,35 +12,30 @@ const Landing = () => {
 
   return (
     <>
-    <div className="page">
-      <div className="main">
+    {/* <div className="page"> */}
+      <div className="landing-main">
 
-      {/* <div className="cover"></div> */}
-      <div className="pin"></div>
-
-      <div className="cover-page">
-
-          <div className="logoCar">
+        <div className="landing-cover-page">
+          <div className="landing-logoCar">
             <img src={logoCar} alt="/" />
           </div>
 
-          <div className="logoText">
+          <div className="landing-logoText">
             <img src={logoText} alt="/" />
           </div>
+        </div>
+
+        <div className="landing-links">
+          <NavLink to='/login'> <AiOutlineUser/> Login </NavLink>
+          <NavLink to='/signup'> <BiUserPlus/> Signup</NavLink>
+        </div>
+
+        <p className='landing-slogan'>
+          God Bless My Car
+        </p>
+
       </div>
-
-          <div className="links">
-            <NavLink to='/login'> <AiOutlineUser/> Login </NavLink>
-            <NavLink to='/signup'> <BiUserPlus/> Signup</NavLink>
-          </div>
-
-
-          <p className='slogan'>
-            God Bless My Car
-          </p>
-
-      </div>
-    </div>
+    {/* </div> */}
     </>
   )
 }

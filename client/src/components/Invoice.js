@@ -17,13 +17,13 @@ export default function Invoice() {
       price: <input type="text" className='input-2' />,
       amount: <input type="text" className='input-2' />,
     },
-    {
-      id: 2,
-      parts: <input type="text" className='input-1' />,
-      quantity: <input type="text" className='input-2' />,
-      price: <input type="text" className='input-2' />,
-      amount: <input type="text" className='input-2' />,
-    },
+    // {
+    //   id: 2,
+    //   parts: <input type="text" className='input-1' />,
+    //   quantity: <input type="text" className='input-2' />,
+    //   price: <input type="text" className='input-2' />,
+    //   amount: <input type="text" className='input-2' />,
+    // },
   ]);
 
   const addRow = () => {

@@ -17,7 +17,7 @@ export default function Navbar() {
 
   return (
     <>
-    <header className="App-header">
+    <header>
       <div className="logo">
         <img src={logoCar} alt="/" />
       </div>
@@ -26,7 +26,7 @@ export default function Navbar() {
       </div>
       <nav>
         <div className="navbar">
-          <ul id='sidemenu'>
+          <ul>
             <li><NavLink to="/home"> <BiHomeAlt2 /> Home</NavLink></li>
             <li><NavLink to='/dashboard'> <VscDashboard /> Dashboard</NavLink></li> 
             <li><NavLink to='/jobcard'> <BsCreditCard2Front /> Jobcard</NavLink></li>

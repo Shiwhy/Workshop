@@ -7,7 +7,7 @@ import Navbar from './Navbar';
 
 export default function Jobcard() {
   
-  const details = {
+  const jobcardDetails = {
     name: '', address: '', contact: '', email: '', custStatus:'',     // customer
     vehType: '', fuel: '', company: '', model: '', plate: '', kms: '', vehicleStatus: '', serviceDate: '',    // vehicle
     empid: '', empName: '', empContact: '',     // employee
@@ -16,79 +16,99 @@ export default function Jobcard() {
     parts: '',      //parts
     jobcardStatus: '' //jobcrd
   }
-  const [data, setData] = useState(details)
+  const [jobcardData, setJobcardData] = useState(jobcardDetails)
   
   const handleChange = (e) => {
-    setData({ ...data, [e.target.name]:e.target.value });
+    setJobcardData({ ...jobcardData, [e.target.name]:e.target.value });
   }
 
   
-  const addData = async () => {
-    let fillerror = document.getElementById('fillInput');
+  const addJobcardData = async () => {
+    let fillInput = document.getElementById('fillInput');
     let emailError = document.getElementById('emailError');
 
-    if (Object.values(data).some((value) => value === '')) {
-      fillerror.innerText = 'Please fill all the fields';
-      fillerror.style.display='block';
+    if (Object.values(jobcardData).some((value) => value === '')) {
+      fillInput.innerText = 'Please fill all the fields';
+      fillInput.style.display='block';
 
       setTimeout(() => {
-        fillerror.style.display= 'none';
+        fillInput.style.display= 'none';
       }, 5000);
       // alert("fill all fields")
       return;
     } 
-    else if (!data.email.includes('@') || !data.email.includes('.')) {
+    else if (!jobcardData.email.includes('@') || !jobcardData.email.includes('.')) {
       emailError.innerText = 'Email Must includes "@" and "."';
       emailError.style.display = 'block'
       // setTimeout(() => {
       //   emailError.style.display = 'none'
       // }, 3000)
     } 
-    else if (data.contact.length < 10 || data.contact.length > 10) {
-      fillerror.innerText = 'Please enter 10 digit contact number';
-      fillerror.style.display = 'block';
+    else if (jobcardData.contact.length < 10 || jobcardData.contact.length > 10) {
+      fillInput.innerText = 'Please enter 10 digit contact number';
+      fillInput.style.display = 'block';
       setTimeout (() => {
-        fillerror.style.display = 'none';
+        fillInput.style.display = 'none';
       }, 5000);
     } 
     else {
       try{
 
-        await axios.post('http://localhost:5001/jobcard', data, {
+        const response = await axios.post('http://localhost:5001/jobcard', jobcardData, {
           headers:{
             "Content-Type": "application/json"
           }
         });
 
+        if(response.status === 200){
+          fillInput.style.color = 'green'
+          fillInput.innerText = 'Data Added Successfully';
+          fillInput.style.display = 'block'
+          setTimeout(() => {
+            fillInput.style.display = 'none'
+          }, 5000);
+          return;
+
+        } else{
+          fillInput.innerText = 'Data Adding failed';
+
+          fillInput.style.display = 'block'
+          
+        }
+
       }catch(err){
         console.log(err)
       }
-      fillerror.innerText = 'Data Added Successfully';
-      fillerror.style.display = 'block'
-      setTimeout(() => {
-        fillerror.style.display = 'none'
-      }, 5000);
     }
 
   }
 
   const getEmpData = async () => {
       try {
-        const response = await axios.post('http://localhost:5001/jobcard/employee', data, {
+        const response = await axios.post('http://localhost:5001/jobcard/employee', jobcardData, {
           headers: {
             "Content-Type": "application/json"
           }
         });
-          
+
+        
         const { empName, empContact } = response.data;
-        setData({
-          ...data,
+        setJobcardData({
+          ...jobcardData,
           empName: empName,
           empContact: empContact,
         });
-  
+        console.log(response.status)
+        if (response.status === 200) {
+          alert("Employee fetched")
+        } else {
+          console.log(response.status)
+        }
+        
       } catch (err) {
-          console.log(err)
+        // alert('employee not exist')
+        alert("Employee not exist")
+        console.log(err)
       }
   }
 
@@ -108,16 +128,16 @@ export default function Jobcard() {
               <input 
                 type="text"
                 name='name'
-                value={data.name}
+                value={jobcardData.name}
                 onChange={handleChange}
               /> 
 
-              <span>Contact :</span> <span className='thumbnail'></span>
+              <span>Contact :</span> 
               <input 
                 type="number" 
                 placeholder='only numbers'
                 name='contact'
-                value={data.contact}
+                value={jobcardData.contact}
                 onChange={handleChange}
               />
 
@@ -125,7 +145,7 @@ export default function Jobcard() {
               <input 
                 type="text" 
                 name='email'
-                value={data.email}
+                value={jobcardData.email}
                 onChange={handleChange}
               />
               {/* validation */}
@@ -136,12 +156,12 @@ export default function Jobcard() {
               <span>Address :</span> 
               <textarea cols="30" rows="5"
                 name="address"
-                value={data.address}
+                value={jobcardData.address}
                 onChange={handleChange}
               ></textarea>
 
               <span>Status: </span>
-              <select name="custStatus" onChange={handleChange} value={data.custStatus}>
+              <select name="custStatus" onChange={handleChange} value={jobcardData.custStatus}>
                 <option value="">Select Type</option>
                 <option value="1">Active</option>
                 <option value="2">Not-Active</option>
@@ -157,7 +177,7 @@ export default function Jobcard() {
             <div className="col">
 
               <span>Vehicle Type :</span> 
-                <select name='vehType' onChange={handleChange} value={data.vehType}> 
+                <select name='vehType' onChange={handleChange} value={jobcardData.vehType}> 
                   <option value="">Select Type</option>
                   <option value="Four Wheel">Four Wheel</option>
                   <option value="Two Wheel">Two Wheel</option>
@@ -165,7 +185,7 @@ export default function Jobcard() {
                 </select>
 
               <span>Fuel :</span>
-                <select name='fuel' onChange={handleChange} value={data.fuel}>
+                <select name='fuel' onChange={handleChange} value={jobcardData.fuel}>
                   <option value="">Select Fuel</option>
                   <option value="1">Petrol</option>
                   <option value="2">Diesel</option>
@@ -174,7 +194,7 @@ export default function Jobcard() {
                 </select>
 
               <span>Vehicle Company: </span> 
-                <select name='company' onChange={handleChange} value={data.company}>
+                <select name='company' onChange={handleChange} value={jobcardData.company}>
                   <option value="">Select Company</option>
                   <option value="1">Tata</option>
                   <option value="2">Hyundai</option>
@@ -189,7 +209,7 @@ export default function Jobcard() {
                 type="text" 
                 onChange={handleChange}
                 name='model'
-                value={data.model}
+                value={jobcardData.model}
               />
 
               <span>Number Plate :</span> 
@@ -197,7 +217,7 @@ export default function Jobcard() {
                 type="text" 
                 onChange={handleChange}
                 name='plate'
-                value={data.plate}
+                value={jobcardData.plate}
               />
 
               <span>KmS Travelled :</span> <span className="thumbnail"></span>
@@ -206,7 +226,7 @@ export default function Jobcard() {
                 placeholder='only numbers'
                 onChange={handleChange}
                 name='kms'
-                value={data.kms}
+                value={jobcardData.kms}
               />
 
             </div>
@@ -214,7 +234,7 @@ export default function Jobcard() {
             <div className="col">
             <h6>Vehicle status</h6>
             <span>Current :</span>
-              <select name='vehicleStatus' value={data.vehicleStatus} onChange={handleChange}>
+              <select name='vehicleStatus' value={jobcardData.vehicleStatus} onChange={handleChange}>
                 <option value="">Select Status</option>
                 <option value="1">Complete</option>
                 <option value="2">In-Work</option>
@@ -226,7 +246,7 @@ export default function Jobcard() {
             <input 
               type="date" 
               name='serviceDate'
-              value={data.serviceDate}
+              value={jobcardData.serviceDate}
               onChange={handleChange}
             /> 
             </div>
@@ -241,7 +261,7 @@ export default function Jobcard() {
                 <textarea cols="70" rows="10"
                   className='complain-box'
                   name='complains'
-                  value={data.complains}
+                  value={jobcardData.complains}
                   onChange={handleChange}
                 ></textarea>
                 
@@ -251,13 +271,13 @@ export default function Jobcard() {
                 <textarea cols="70" rows="10"
                   className='complain-box'
                   name='reqService'
-                  value={data.reqService}
+                  value={jobcardData.reqService}
                   onChange={handleChange}
                 ></textarea>
               </div>
               <div className="col-2">
                 Status: <br />
-                <select name="compStatus" onChange={handleChange} value={data.compStatus}>
+                <select name="compStatus" onChange={handleChange} value={jobcardData.compStatus}>
                   <option value="">Select Status</option>
                   <option value="2">Pending</option>
                   <option value="1">Done</option>
@@ -277,7 +297,7 @@ export default function Jobcard() {
                   className='empid'
                   placeholder='ID number'
                   name='empid'
-                  value={data.empid}
+                  value={jobcardData.empid}
                   onChange={handleChange}
                 />
                 <button className='empdetail' onClick={getEmpData}>Get</button>
@@ -286,7 +306,7 @@ export default function Jobcard() {
                 <input readOnly
                   type="text" 
                   name='empName'
-                  value={data.empName}
+                  value={jobcardData.empName}
                   onChange={handleChange}
                 />
 
@@ -294,7 +314,7 @@ export default function Jobcard() {
                 <input readOnly
                   type="text"
                   name='empContact' 
-                  value={data.empContact}
+                  value={jobcardData.empContact}
                   onChange={handleChange}
                 />
 
@@ -304,7 +324,7 @@ export default function Jobcard() {
                 <h6>Parts Required</h6>
                 <textarea cols="30" rows="8" 
                   name='parts' 
-                  value={data.parts} 
+                  value={jobcardData.parts} 
                   onChange={handleChange}>
                 </textarea>
               </div>
@@ -313,7 +333,7 @@ export default function Jobcard() {
                 <h6>Payment</h6>
 
                 <span>Method :</span>
-                  <select id='pymentDD' name='paymentMethod' value={data.paymentMethod} onChange={handleChange}>
+                  <select id='pymentDD' name='paymentMethod' value={jobcardData.paymentMethod} onChange={handleChange}>
                     <option value="">Select Method</option>
                     <option value="Cash">Cash</option>
                     <option value="Cheque">Cheque</option>
@@ -324,12 +344,12 @@ export default function Jobcard() {
                     type="number" 
                     name='amount'
                     placeholder='only numbers'
-                    value={data.amount}
+                    value={jobcardData.amount}
                     onChange={handleChange}
                   />
                   
                 <span>Status :</span> 
-                  <select name='paymentStatus' value={data.paymentStatus} onChange={handleChange}>
+                  <select name='paymentStatus' value={jobcardData.paymentStatus} onChange={handleChange}>
                     <option value="">Select status</option>
                     <option value="1">Done</option>
                     <option value="2">Pending</option>
@@ -337,12 +357,12 @@ export default function Jobcard() {
               </div>
             </div>
           </div>
-          <button onClick={addData} className='savebtn'><BiSave/> Save</button>
+          <button onClick={addJobcardData} className='savebtn'><BiSave/> Save</button>
           <p id="fillInput">Please fill all the fields</p>
 
           <div className="jobcard-status">
             <span>Jobcard Status : &nbsp;</span>
-              <select name="jobcardStatus" value={data.jobcardStatus} onChange={handleChange}>
+              <select name="jobcardStatus" value={jobcardData.jobcardStatus} onChange={handleChange}>
                 <option value="">Select status</option>
                 <option value="1">Complete</option>
                 <option value="2">Incomplete</option>

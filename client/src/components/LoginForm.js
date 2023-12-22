@@ -10,11 +10,11 @@ export default function LoginForm() {
 
   const navigate = useNavigate();
   
-  const data = { username: '', password: '' };
-  const [inputData, setInputData] = useState(data)
+  const userLoginData = { username: '', password: '' };
+  const [loginData, setLoginData] = useState(userLoginData)
 
   const handleData = (e) => {
-    setInputData({...inputData, [e.target.name]:e.target.value})
+    setLoginData({...loginData, [e.target.name]:e.target.value})
   }
 
   const handleLogin =  async (e) => {
@@ -22,11 +22,11 @@ export default function LoginForm() {
     var error = document.getElementById('error')
     
 
-    if(!inputData.username || !inputData.password) {
+    if(!loginData.username || !loginData.password) {
         error.style.display = 'block';
     } else {
       try{
-        const res = await  axios.post('http://localhost:5001/login', inputData, {
+        const res = await axios.post('http://localhost:5001/login', loginData, {
           headers:{
             'Content-Type': 'application/json'
           }
@@ -52,14 +52,14 @@ export default function LoginForm() {
 
   return (
     <>
-    <form className="container form" id='loginForm'>
+    <form className="container login-form" id='loginForm'>
       <h1>Login</h1>
       <div className="inputBox">
-        <input type="text" id='username' name='username' value={ inputData.username } onChange={ handleData } required="required" />
+        <input type="text" id='username' name='username' value={ loginData.username } onChange={ handleData } required="required" />
         <span>Username</span>
       </div>
       <div className="inputBox">
-        <input type="password" id='password' name='password' value={ inputData.password } onChange={ handleData } required="required" />
+        <input type="password" id='password' name='password' value={ loginData.password } onChange={ handleData } required="required" />
         <span>Password</span>
       </div>
 

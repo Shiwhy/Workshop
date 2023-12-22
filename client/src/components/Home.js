@@ -30,7 +30,7 @@ export default function Home() {
     
     <div className="container" id='home'>
       <div className="home-page">
-        <div className="first-page">
+        <div className="home-first-page">
           <h1 className='main-heading'>
             WELCOME<br /> TO THE <br /> GARAGE
           </h1>
@@ -39,7 +39,7 @@ export default function Home() {
 
       <br />
 
-      <div className="second-page up">
+      <div className="home-second-page">
         <h1>WHO WE ARE?</h1>
       </div>
       <div className="first-image">
@@ -48,7 +48,7 @@ export default function Home() {
             <img src={ homeMechanic } alt="/" /*height={300}*/ className='homeMechanic' />
           </div>
           <div className="col">
-            <p className="second-page-text">
+            <p className="home-second-page-text">
 
               We are proud to introduce you to this Garage Management System, a dedicated team of automotive enthusiasts and technology experts. With a passion for two wheelers and four wheelers, a commitment to innovation, we embarked on a journey to simplify and enhance the garage management experience. 
               <br />
@@ -58,7 +58,9 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="second-page down">
+          <br />
+
+      <div className="home-second-page">
         <h1>WHAT DO WE DO?</h1>
       </div>
       <div className="second-image">
@@ -67,7 +69,7 @@ export default function Home() {
             <img src={ homeMechanic2 } alt="/" height={300} className='homeMechanic2' />
           </div>
           <div className="col">
-            <p className="second-page-text">
+            <p className="home-second-page-text">
             We provide a glimpse into the multifaceted services and features offered by this Garage management system. At its core, our system is designed to streamline and optimize every aspect of garage management. We've harnessed the power of technology to simplify the daily operations of garages, whether you're a small, family-owned shop or a large, multi-location enterprise. Our user-friendly interface empowers garage owners and mechanics to focus on what they do best  providing top-notch automotive care  while we handle the administrative complexity. 
             <br />
             Additionally, our system offers a seamless experience for vehicle owners, allowing them to book appointments, receive real-time updates, and access detailed service histories, ensuring a problem-free and transparent interaction with their chosen garage.
@@ -76,7 +78,9 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="second-page down">
+        <br />
+
+      <div className="home-second-page">
         <h1>Our Services</h1>
       </div>
       <br /><br />
@@ -132,8 +136,7 @@ export default function Home() {
         <div className="row">
           <div className="col">
             <div className="footer-logo">
-            <span className='footer-logo-car'><IoCarSport /></span><span className='footer-logo-text'>GARAGE</span>
-              
+              <span className='footer-logo-car'><IoCarSport /></span><span className='footer-logo-text'>GARAGE</span>
             </div>
           </div>
           <div className="col first-col">

@@ -29,6 +29,8 @@ export default function Dashboard() {
   const [pendingPayment, setPendingPayment] = useState(0)
   const [feedbackCount, setFeedbackCount] = useState(0)
   const [jobcardCount, setJobcardCount] = useState(0)
+
+
   useEffect(() => {
     const fetchData = async () => {
       try{
@@ -108,18 +110,17 @@ export default function Dashboard() {
     <Navbar/>
     <div className="container">
       <div className="dashboard">
-
         
         <br />
 
         <div className="row">
           <div className="col">
-            <div className="dashboard-menu">
+            <div className="dashboard-title">
               <h2><VscDashboard/> Dashboard</h2>
             </div>
 
 
-            <div className="dash-slogan">
+            <div className="dashboard-slogan">
               <p>Driven by passion, <br /> Fueled by expertise.</p>
             </div>
           </div>
