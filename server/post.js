@@ -153,6 +153,8 @@ app.post('/jobcard', async (req,res) => {
     `;
     await pool.request().query(updateEst);
 
+    res.status(200).json({ message:'Jobcard added' })
+
 
   }catch(err){
     console.log(err)
@@ -173,15 +175,28 @@ app.post('/jobcard/employee', async(req,res) => {
     `;
 
     const result = await pool.request().query(query);
-      
+
     const { emp_name, contact } = result.recordset[0];
-    res.json({
-       empName: emp_name,
-       empContact: contact,
-    });
+
+    if (result.recordset[0]) {
+      res.json({
+        empName: emp_name,
+        empContact: contact,
+      });
+      // res.status(200).json({ message: `Employee fetched.` })
+    } else  {
+      console.log(res.status);
+      res.status(401).json({ message: `Employee doesn't exist.` })
+    }
+
+    // res.json({
+    //    empName: emp_name,
+    //    empContact: contact,
+    // });
 
   }catch(err){
     console.log(err)
+    return res.status(500).json({ message: `server error`})
   }
 });
 
@@ -201,6 +216,20 @@ app.post('/addemp', async (req,res) => {
 
 });
 
+
+//add part
+app.post('/addpart', async (req,res) => {
+  await poolConnect;
+  const{ partname, partprice, partunit } = req.body;
+
+  const query = `
+    insert into parts ( part_name, price, units ) 
+    values ('${partname}', ' ${partprice}', '${partunit}')
+  `;
+  await pool.request().query(query)
+  res.status(200).json({ message: 'Data Added Succesfully' });
+
+})
 
 
 app.listen(PORT, () => {

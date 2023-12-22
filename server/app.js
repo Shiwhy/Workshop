@@ -1,10 +1,12 @@
 
 const express = require('express');
-const { ConnectionPool } = require('mssql');
+const sql = require('mssql');
 const app = express();
 const port = 5000;
 const cors = require('cors');
 const bodyParser = require('body-parser');
+
+// const path = require('path')
 
 const config = {
   user: 'meet',
@@ -18,7 +20,7 @@ const config = {
   },
 };
 
-const pool = new ConnectionPool(config);
+const pool = new sql.ConnectionPool(config);
 pool.connect().then(() => {
   console.log('Connected to SQL Server database');
 }).catch((err) => {
@@ -28,6 +30,13 @@ pool.connect().then(() => {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors())
+
+// app.use(express.static(path.join(__dirname, '../client/build')));
+
+// // Handle all routes by serving the index.html file
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+// });
 
 
 // ------------------------------ API -----------------------------------------------------
@@ -244,14 +253,16 @@ app.get('/jobcard', async (req, res) => {
         payment.amount,
         payment.payment_status,
         payment.invoice_name,
-        payment.invoice_date
+        payment.invoice_date,
+        estimate.est_date
       from jobcard
       join jobcard_status on jobcard_status.status_id = jobcard.jobcard_status
       join customer on customer.customer_id = jobcard.customer_id
       join employee on employee.emp_id = jobcard.employee_id
       join vehicle on vehicle.vehicle_id = jobcard.vehicle_id
       join complains on complains.complain_id = jobcard.complain_id
-      join payment on payment.payment_id = jobcard.payment_id;
+      join payment on payment.payment_id = jobcard.payment_id
+      join estimate on estimate.jobcard_id = jobcard.jobcard_id
 
     `;
     const result = await pool.request().query(query)
@@ -276,24 +287,36 @@ app.get('/payment', async (req, res) => {
   try{
     const query = `
       select payment.payment_id,
-        payment_status.value, 
-        payment.payment_type, 
-        payment.amount,
-        payment.bank_acc,
-        payment.ack_no,
-        payment.payment_date,
-        payment.invoice_id,
-        payment.invoice_name,
-        payment.invoice_no,
-        invoice_status.inv_value, 
-        customer.customer_name, 
-        vehicle.vehicle_model 
-      from payment
-      join payment_status on payment_status.status_id = payment.payment_status
-      join invoice_status on invoice_status.status_id = payment.invoice_status
-      join customer on customer.customer_id = payment.customer_id
-      join vehicle on vehicle.vehicle_id = payment.vehicle_id
+          payment_status.value as paymentStatus,
+          payment.amount,
+          customer.customer_name,
+          customer.contact,
+          vehicle.registration_no,
+          vehicle.vehicle_model
+        from payment
+        join payment_status on payment_status.status_id = payment.payment_status
+        join customer on customer.customer_id = payment.customer_id
+        join vehicle on vehicle.vehicle_id = payment.vehicle_id 
+      where payment.payment_status = 2;
     `;
+    // select payment.payment_id,
+    //   payment_status.value, 
+    //   payment.payment_type, 
+    //   payment.amount,
+    //   payment.bank_acc,
+    //   payment.ack_no,
+    //   payment.payment_date,
+    //   payment.invoice_id,
+    //   payment.invoice_name,
+    //   payment.invoice_no,
+    //   invoice_status.inv_value, 
+    //   customer.customer_name, 
+    //   vehicle.vehicle_model 
+    // from payment
+    // join payment_status on payment_status.status_id = payment.payment_status
+    // join invoice_status on invoice_status.status_id = payment.invoice_status
+    // join customer on customer.customer_id = payment.customer_id
+    // join vehicle on vehicle.vehicle_id = payment.vehicle_id
     const result = await pool.request().query(query)
     res.json(result.recordset)
   } catch(err) {
