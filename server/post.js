@@ -189,11 +189,6 @@ app.post('/jobcard/employee', async(req,res) => {
       res.status(401).json({ message: `Employee doesn't exist.` })
     }
 
-    // res.json({
-    //    empName: emp_name,
-    //    empContact: contact,
-    // });
-
   }catch(err){
     console.log(err)
     return res.status(500).json({ message: `server error`})
@@ -230,6 +225,24 @@ app.post('/addpart', async (req,res) => {
   res.status(200).json({ message: 'Data Added Succesfully' });
 
 })
+
+//searchbar
+app.post('/search', async (req,res) => {
+  try {
+    
+    await poolConnect;
+    const{ searchData } = req.body;
+  
+    const query = `
+      select * from employee where emp_name = '${searchData}' or designation='${searchData}';
+    `;
+    const result = await pool.request().query(query)
+    res.json(result.recordset);
+  } catch (err) {
+    console.log(err)
+    
+  }
+});
 
 
 app.listen(PORT, () => {
