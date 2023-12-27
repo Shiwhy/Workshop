@@ -1,30 +1,60 @@
-import React,{useEffect,useState} from 'react'
+import React,{ useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'
+import axios from 'axios';
 
 import { MdEngineering } from "react-icons/md";
+import Searchbar from '../Utils/Searchbar';
 
 const Employee = () => {
 
-  const  [emp,setemp] = useState([])
+  const navigate = useNavigate();
   
+  const  [emp, setEmp] = useState([])
   useEffect (() => {
     axios.get('http://localhost:5000/employee')
     .then((res) => {
-      setemp(res.data)
-    }) 
-  });
+      setEmp(res.data)
+    });
+  }, []);
 
-  const navigate = useNavigate()
-  const addemp = () => {
-    navigate('/addemp')
-  } 
+  // const searchEmpData = { searchData: '' }
+  const [searchPanelData, setSearchPanelData] = useState({ searchData: '' })
+
+  const handleChange = (e) => {
+    setSearchPanelData({...searchPanelData, [e.target.name]:e.target.value});
+  }
+
+  const searchData = async() => {
+    if(Object.values(searchPanelData).some((value) => value==='')) {
+      alert('Enter field')
+    }
+    else{
+      try {
+        const res = await axios.post('http://localhost:5001/search', searchPanelData)
+        setEmp(res.data)
+  
+      } catch(err)
+      {
+        console.log(err)
+  
+      }
+    }
+  }
 
   return (
     <>
     <div className="heading-div">
       <p className="heading"><MdEngineering/> Employee</p>
-      <button className='addbtn' onClick={addemp}> Add Employee</button>
+
+      <Searchbar
+        placeholder='employee' 
+        name='searchData' 
+        value={ searchPanelData.searchData } 
+        onChange={ handleChange } 
+        onClick={ searchData } 
+      />
+
+      <button className='addbtn' onClick={ () => navigate('/addemp') }> Add Employee</button>
     </div>
 
     
