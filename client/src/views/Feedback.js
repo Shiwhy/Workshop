@@ -1,6 +1,8 @@
 import React,{useEffect,useState} from 'react'
 import axios from 'axios'
 
+import {VscFeedback} from 'react-icons/vsc'
+
 const Feedback = () => {
 
   const [feedback,setfeedback] = useState([])
@@ -15,6 +17,9 @@ const Feedback = () => {
 
   return (
     <>
+    <div className="heading-div">
+      <p className="heading">< VscFeedback/> Feedback</p>
+    </div>
     <div className="mainDivision">
       {feedback.map((feedback) => {
         return <div className="view" key={feedback.feedback_id}>

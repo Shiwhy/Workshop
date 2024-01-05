@@ -13,15 +13,16 @@ const AddEmp = () => {
         </div>
       <div className="empbg">
 
-        <div className="emp-designation">
-            <span>Designation : </span> &nbsp;
-            <input type="text" />
-        </div>
 
         <div className="emp-form">
           <div className="emp-d">
             <span>Details</span>
           </div>
+          
+        <div className="emp-designation">
+            <span>Designation : </span> &nbsp;
+            <input type="text" />
+        </div>
 
           <div className="row">
             <div className="col">
@@ -63,7 +64,7 @@ const AddEmp = () => {
           </div>
 
           <div className="emp-designation">
-            <button>Add</button>
+            <button className='savebtn'>Add</button>
           </div>
          
         </div>

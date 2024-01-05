@@ -6,42 +6,80 @@ import { LiaFileInvoiceDollarSolid } from 'react-icons/lia';
 import { BiSave } from 'react-icons/bi';
 import Navbar from './Navbar';
 
+import axios from 'axios';
+
 export default function Invoice() {
 
   // ----------- Add Table Rows -------------
+
+  const [totlAmount, setTotalAmount] = useState(0)
   const [rows, setRows] = useState([
     {
       id: 1,
-      parts: <input type="text" className='input-1' />, 
-      quantity: <input type="text" className='input-2' />,
-      price: <input type="text" className='input-2' />,
-      amount: <input type="text" className='input-2' />,
+      parts: <input type="text" className='input-1' name='invParts' />, 
+      quantity: <input type="text" className='input-2' name='invQuantity' />,
+      price: <input type="text" className='input-2' name='invPrice' />,
+      amount: <input type="number" className='input-2 amount' name='invAmount' />,
     },
-    // {
-    //   id: 2,
-    //   parts: <input type="text" className='input-1' />,
-    //   quantity: <input type="text" className='input-2' />,
-    //   price: <input type="text" className='input-2' />,
-    //   amount: <input type="text" className='input-2' />,
-    // },
   ]);
 
   const addRow = () => {
     const newRow = {
       id: new Date().getTime(),
-      parts: <input type="text" className='input-1'/>, 
-      quantity: <input type="text" className='input-2' />,
-      price: <input type="text" className='input-2' />,
-      amount: <input type="text" className='input-2' />
+      parts: <input type="text" className='input-1' name='invParts' />, 
+      quantity: <input type="text" className='input-2' name='invQuantity' />,
+      price: <input type="text" className='input-2' name='invPrice' />,
+      amount: <input type="number" className='input-2 amount' name='invAmount' />
     };
 
     setRows([...rows, newRow]);
   };
 
+  
+  const totalAmount = () => {
+    var totAmnt = 0;
+    const controls = Array.from(document.getElementsByClassName("amount"));
+    for (let i = 0; i < controls.length; i++) {
+      totAmnt = totAmnt + parseInt(controls[i].value);
+    }
+    setTotalAmount(totAmnt);
+  }
+
+  // const minusAmout = (index) => {
+  //   var totAmnt = 0;
+  //   const controls = Array.from(document.getElementsByClassName('amount'));
+  //   totAmnt = totAmnt - parseInt(controls[0].value)
+  //   setTotalAmount(totAmnt);
+
+    
+  // }
+  
+
+  
+
   const deleteRow = (id) => {
-    const updatedRows = rows.filter((row) => row.id !== id);
-    setRows(updatedRows);
+    // const updatedRows = rows.filter((row) => row.id !== id);
+    // setRows(updatedRows);
+
+    const newRows = [...rows];
+    const deletedRow = newRows.splice(id, 1)[0];
+    setRows(newRows);
+    setTotalAmount(totlAmount - deletedRow.amount);
   };
+
+  const handleChange = (e) => {
+    setInvoiceData({ ...invoiceData, [e.target.name]:e.target.value });
+  }
+
+  const [invoiceData, setInvoiceData] = useState({ invParts:'', invQuantity:'', invPrice:'', invAmount:'' })
+  const addInvoiceData = async () =>{
+    try {
+      await axios.post('http://localhost:5001/jobcard', invoiceData)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  
 
   return (
     <>
@@ -86,24 +124,24 @@ export default function Invoice() {
                 <span>Customer : </span> &nbsp;
                   <input type="text" 
                     name='customer'
-         
-                  /> <br /><br />
-                {/* <span>Address : </span> &nbsp;
-                  <input type="text"
-                    name='address'
-                    value={invData.address}
+                    onChange={ handleChange }
+                  /> 
                   
-                  /> */}
+                  <br /><br />
+
               </div>
 
               <div className="col">
                 <span>Invoice Number : </span> &nbsp;
                   <input type="text" 
-                  /> <br /><br />
+                  /> 
+                  
+                  <br /><br />
 
                 <span>Vehicle Plate_no : </span> &nbsp;
                   <input type=" text" 
                     name='plate'
+                    onChange={ handleChange }
 
                   />     
               </div>
@@ -123,33 +161,32 @@ export default function Invoice() {
               </tr>
             </thead>
             <tbody>
-              {rows.map((row) => (
+              {rows.map((row, index) => (
                 <tr key={row.id}>
                   <td className='input-1'>{row.parts}</td>
                   <td className='input-2'>{row.quantity}</td>
                   <td className='input-2'>{row.price}</td>
-                  <td className='input-2'>{row.amount}</td>
+                  <td className='input-2' onChange={(e) => totalAmount(index, e.target.value)}>{row.amount}</td>
                   <td>
-                    <button className='dltBtn' onClick={() => deleteRow(row.id)}> <RiDeleteBinLine/></button>
+                    <button className='dltBtn' onClick={ deleteRow }> <RiDeleteBinLine/></button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <button className='addBtn my-3' onClick={addRow}> Add </button>
+          <button className='addBtn my-3' onClick={ addRow }> Add </button>
           <div className="row">
             <div className="col"></div>
             <div className="col"></div>
             <div className="col">
-              <span>Total: </span><input type="text" readOnly/>
+              <span>Total: </span><input type="text" value={totlAmount} readOnly/>
             </div>
           </div>
         </div>
-        <button className='savebtn'><BiSave/> Save</button>
+        <button className='savebtn' onClick={ addInvoiceData }><BiSave/> Save</button>
       </div>
       <br /><br />
     </div>
     </>
   )
 }
-

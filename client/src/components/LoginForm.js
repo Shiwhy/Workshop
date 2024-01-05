@@ -66,6 +66,8 @@ export default function LoginForm() {
       <p id='error'>Invalid Username or Password</p>
 
       <button className='loginBtn' type='submit' onClick={ handleLogin } >Log In</button>
+      <NavLink to='/forgetpassword'>Forgot Password?</NavLink>
+
       
       <p>Don't have an account?  <NavLink to="/signup" className='signup-link'>SignUp here</NavLink></p>
 

@@ -1,8 +1,5 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Shery from 'sheryjs';
-
-
 
 // ---- Components ----
 // import Navbar from './components/Navbar';
@@ -23,6 +20,19 @@ import Feedback from './views/Feedback';
 import Stock from './views/Stock';
 import Payment from './views/Payment';
 import Jobcarddetails from './views/Jobcarddetails';
+// import AddEmp from './Utils/AddEmp';
+import AddEmp from './components/AddEmp';
+import AddParts from './components/AddParts';
+import Searchbar from './Utils/Searchbar';
+import SearchResult from './Utils/SearchResult';
+
+
+import Inv from './components/Inv';
+import Inv2 from './components/Inv2';
+import ForgetPass from './components/ForgetPass';
+import Invoice2 from './components/Asdf';
+
+
 // ---- x Components x ----
 
 function App() {
@@ -38,7 +48,11 @@ function App() {
             <Route path='/about' element={<About />} />
             <Route path='/jobcard' element={<Jobcard />} />
             <Route path='/dashboard' element={<Dashboard />} />
-            <Route path='/invoice' element={<Invoice />} />
+            <Route path='/invoice' element={<Inv2 />} />
+            <Route path='/forgetpassword' element={ <ForgetPass/> } />
+
+            <Route path='/inv' element={ <Inv/> } />
+            <Route path='/inv2' element={ <Inv2/> } />
 
             {/* views */}
             <Route path='/vehicleview' element={<Vehicle/>} /> 
@@ -50,6 +64,19 @@ function App() {
             <Route path='/stockview' element={<Stock/>} />
             <Route path='/paymentview' element={<Payment/>} /> 
             <Route path='/jobcardview' element={<Jobcarddetails/>} /> 
+            {/* <Route path='/addemp' element={<AddEmp/>} />  */}
+            <Route path='/searchbar' element={<Searchbar/>}/>
+            <Route path='/searchResult' element={<SearchResult/>} />
+
+            <Route path='/addemp' element={<AddEmp/>} />
+            <Route path='/addparts' element={<AddParts/>} />
+
+            <Route path='/asdf' element={ <Invoice2/> } />
+
+
+
+
+
           </Routes>
       </Router>
     </div>

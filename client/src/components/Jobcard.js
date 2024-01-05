@@ -36,7 +36,7 @@ export default function Jobcard() {
       }, 5000);
       // alert("fill all fields")
       return;
-    } 
+    }
     else if (!jobcardData.email.includes('@') || !jobcardData.email.includes('.')) {
       emailError.innerText = 'Email Must includes "@" and "."';
       emailError.style.display = 'block'
@@ -98,7 +98,7 @@ export default function Jobcard() {
           empName: empName,
           empContact: empContact,
         });
-        console.log(response.status)
+        // console.log(response.status)
         if (response.status === 200) {
           alert("Employee fetched")
         } else {
@@ -167,6 +167,13 @@ export default function Jobcard() {
                 <option value="2">Not-Active</option>
               </select>
             </div>
+
+            {/* <div className="col">
+              <span>Jobcard Create Date: </span>
+              <input type="date"
+                name='jobcardDate'
+              />
+            </div> */}
           </div>
         </div>
 

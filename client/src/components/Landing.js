@@ -25,14 +25,11 @@ const Landing = () => {
           </div>
         </div>
 
+
         <div className="landing-links">
           <NavLink to='/login'> <AiOutlineUser/> Login </NavLink>
           <NavLink to='/signup'> <BiUserPlus/> Signup</NavLink>
         </div>
-
-        <p className='landing-slogan'>
-          God Bless My Car
-        </p>
 
       </div>
     {/* </div> */}

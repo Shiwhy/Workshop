@@ -1,6 +1,8 @@
 import React,{useEffect,useState} from 'react'
 import axios from 'axios'
+import Searchbar from '../Utils/Searchbar';
 
+import {PiClipboardTextFill} from 'react-icons/pi'
 
 const Jobcarddetails = () => {
 
@@ -11,10 +13,49 @@ const Jobcarddetails = () => {
     .then((res) => {
       setjobcard(res.data);
     })
-  },[])
+  },[]);
+
+  const [searchJobcardData, setSearchJobcardData] = useState({ searchJobcard: ''});
+
+  const handleChange = (e) => {
+    setSearchJobcardData({...searchJobcardData, [e.target.name]:e.target.value});
+  }
+
+  const searchJobcard =  async() => {
+    try{
+      const res = await axios.post('http://localhost:5001/search', searchJobcardData)
+      setjobcard(res.data)
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  const clearSearch = async() => {
+    try{
+        const res = await axios.get('http://localhost:5000/jobcard')
+        setjobcard(res.data)
+        setSearchJobcardData({ searchJobcard: '' })
+    }catch(err){
+      console.log(err)
+    }
+  }
+
 
   return (
     <>
+    <div className="heading-div">
+      <p className="heading">< PiClipboardTextFill/> Jobcard</p>
+
+      <Searchbar
+        placeholder='Jobcard' 
+        name='searchJobcard' 
+        value={ searchJobcardData.searchJobcard } 
+        onChange={ handleChange } 
+        onClick={ searchJobcard } 
+        onClickClear={ clearSearch }
+      />
+
+    </div>
     <div className="mainDivision">
       {jobcard.map((jobcard) => {
         return <div className="view" key={jobcard.jobcard_id}>
@@ -30,10 +71,10 @@ const Jobcarddetails = () => {
               <span>Customer :&nbsp; </span> {jobcard.customer_name}
             </p>
             <p>
-              <span>Emloyee :&nbsp; </span> {jobcard.emp_name}
+              <span>Employee :&nbsp; </span> {jobcard.emp_name}
             </p>
             <p>
-              <span>Vehicle :&nbsp; </span> {jobcard.vehicle_model}
+              <span>Vehicle Model :&nbsp; </span> {jobcard.vehicle_model}
             </p>
             <p>
               <span>Complain :&nbsp; </span> {jobcard.complain}
@@ -42,10 +83,13 @@ const Jobcarddetails = () => {
               <span>Part :&nbsp; </span> {jobcard.part_name}
             </p> */}
             <p>
-              <span>Payment :&nbsp; </span> {jobcard.value}
+              <span>Payment Status:&nbsp; </span> {jobcard.paymentStatus}
             </p>
             <p>
-              <span>Invoice :&nbsp; </span> {jobcard.invoice_no}
+              <span>Invoice name :&nbsp; </span> {jobcard.invoice_no}
+            </p>
+            <p>
+              <span>Estimate :&nbsp; </span> {jobcard.est_date}
             </p>
           </div>
         </div>

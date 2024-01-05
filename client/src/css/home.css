@@ -66,9 +66,6 @@
   flex-wrap: wrap;
 }
 
-.first-image .row{
-}
-
 .homeMechanic,
 .homeMechanic2 {
   border-radius: 15px;
@@ -80,14 +77,11 @@
   text-align: justify;
   /* height: 20vmax; */
   font-size: 1.2vw;
-  background-color: red;
 }
 
 .home-second-page-text p {
   font-size: 1rem;
 }
-
-
 .services {
   color: #fff;
   cursor: pointer;

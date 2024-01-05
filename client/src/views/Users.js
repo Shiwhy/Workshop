@@ -1,5 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import Searchbar from '../Utils/Searchbar';
 
 // Icon
 import { HiUsers } from "react-icons/hi";
@@ -14,10 +15,55 @@ const Users = () => {
     })
   }, [])
 
+
+  const [searchCutomerData, setSearchCustomerData] = useState({ searchCustomer: '' })
+
+  const handleChange = (e) => {
+    setSearchCustomerData({...searchCutomerData, [e.target.name]:e.target.value});
+  }
+
+  const searchData = async () => {
+    if(!searchCutomerData.searchCustomer) {
+      alert('Enter field')
+    }
+    else{
+      try {
+        const res = await axios.post('http://localhost:5001/search', searchCutomerData)
+        setUsers(res.data)
+      } catch(err)
+      {
+        console.log(err)
+      }
+    }
+  }
+
+  
+
+  const clearSearch = async() => {
+    try{
+        const res = await axios.get('http://localhost:5000/customer')
+        setUsers(res.data)
+        setSearchCustomerData({ searchCustomer: '' })
+    }catch(err){
+      console.log(err)
+    }
+  }
+
   return (
     <>
      <div className="heading-div">
         <p className="heading"><HiUsers/> Customers</p>
+
+        <Searchbar
+          placeholder='customer' 
+          name='searchCustomer' 
+          value={ setSearchCustomerData.searchCustomer } 
+          onChange={ handleChange } 
+          onClick={ searchData } 
+          onClickClear={ clearSearch }
+        />
+
+
       </div>
     <div className="mainDivision">
 
@@ -41,7 +87,7 @@ const Users = () => {
               <span>Vehicle :&nbsp;</span> {customer.vehicle_model}
             </p>
             <p>
-              <span>Status :&nbsp;</span> {customer.value}
+              <span>Status :&nbsp;</span> {customer.customerStatus}
             </p>
           </div>
        </div>

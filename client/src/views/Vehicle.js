@@ -1,5 +1,6 @@
 import React,{useEffect,useState} from 'react'
 import axios from 'axios'
+import Searchbar from '../Utils/Searchbar';
 
 import { IoCarSportSharp } from "react-icons/io5";
 
@@ -15,10 +16,56 @@ const Vehicle = () => {
     })
   }, []);
 
+
+  const [searchVehicleData, setSearchVehicleData] = useState({ searchVehicle: '' })
+
+  const handleChange = (e) => {
+    setSearchVehicleData({...searchVehicleData, [e.target.name]:e.target.value});
+  }
+
+  const searchData = async () => {
+    if(!searchVehicleData.searchVehicle) {
+      alert('Enter field')
+    }
+    else{
+      try {
+        const res = await axios.post('http://localhost:5001/search', searchVehicleData)
+        setVehicle(res.data)
+      } catch(err)
+      {
+        console.log(err)
+      }
+    }
+  }
+
+  
+
+  const clearSearch = async() => {
+    try{
+        const res = await axios.get('http://localhost:5000/vehicle')
+        setVehicle(res.data)
+        setSearchVehicleData({ searchVehicle: '' })
+    }catch(err){
+      console.log(err)
+    }
+
+  }
+
+
   return (
     <>
       <div className="heading-div">
         <p className="heading"><IoCarSportSharp/> Vehicle</p>
+
+          <Searchbar
+            placeholder='vehicle' 
+            name='searchVehicle' 
+            value={ searchVehicleData.searchVehicle } 
+            onChange={ handleChange } 
+            onClick={ searchData } 
+            onClickClear={ clearSearch }
+          />
+        
       </div>
     <div className="mainDivision">
 

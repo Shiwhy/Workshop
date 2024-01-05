@@ -12,13 +12,20 @@ const Delivery = () => {
     .then((res) => {
       setdelivery(res.data);
     })
-  }, [])
+  }, []);
+
+
+  
+
+  
 
 
   return (
     <>
     <div className="heading-div">
       <p className="heading">< TbTruckDelivery/> Delivery</p>
+
+
     </div>
     <div className="mainDivision">
       {delivery.map((deliveryData) => {

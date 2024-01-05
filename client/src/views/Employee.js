@@ -17,28 +17,40 @@ const Employee = () => {
     });
   }, []);
 
-  // const searchEmpData = { searchData: '' }
-  const [searchPanelData, setSearchPanelData] = useState({ searchData: '' })
+
+  
+  const [searchEmpData, setSearchEmpData] = useState({ searchEmp: '' })
 
   const handleChange = (e) => {
-    setSearchPanelData({...searchPanelData, [e.target.name]:e.target.value});
+    setSearchEmpData({...searchEmpData, [e.target.name]:e.target.value});
   }
 
   const searchData = async() => {
-    if(Object.values(searchPanelData).some((value) => value==='')) {
+    if(!searchEmpData.searchEmp) {
       alert('Enter field')
     }
     else{
       try {
-        const res = await axios.post('http://localhost:5001/search', searchPanelData)
+        const res = await axios.post('http://localhost:5001/search', searchEmpData)
         setEmp(res.data)
-  
       } catch(err)
       {
         console.log(err)
-  
       }
     }
+  }
+
+  
+
+  const clearSearch = async() => {
+    try{
+        const res = await axios.get('http://localhost:5000/employee')
+        setEmp(res.data)
+        setSearchEmpData({ searchEmp: '' })
+    }catch(err){
+      console.log(err)
+    }
+
   }
 
   return (
@@ -48,10 +60,11 @@ const Employee = () => {
 
       <Searchbar
         placeholder='employee' 
-        name='searchData' 
-        value={ searchPanelData.searchData } 
+        name='searchEmp' 
+        value={ searchEmpData.searchEmp } 
         onChange={ handleChange } 
         onClick={ searchData } 
+        onClickClear={ clearSearch }
       />
 
       <button className='addbtn' onClick={ () => navigate('/addemp') }> Add Employee</button>
