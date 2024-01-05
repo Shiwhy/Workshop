@@ -251,7 +251,7 @@ app.get('/jobcard', async (req, res) => {
         vehicle.registration_no,
         complains.complain,
         payment.amount,
-        payment.payment_status,
+        payment_status.value as paymentStatus,
         payment.invoice_name,
         payment.invoice_date,
         estimate.est_date
@@ -263,7 +263,7 @@ app.get('/jobcard', async (req, res) => {
       join complains on complains.complain_id = jobcard.complain_id
       join payment on payment.payment_id = jobcard.payment_id
       join estimate on estimate.jobcard_id = jobcard.jobcard_id
-
+      join payment_status on payment_status.status_id = payment.payment_status
     `;
     const result = await pool.request().query(query)
     res.json(result.recordset)
@@ -384,6 +384,22 @@ app.get('/empid', async (req, res) => {
   }
 });
 
+
+app.get('/search', async (req,res) => {
+
+  try{
+    const{ searchData } = req.body;
+
+    const query = `
+      select * from employee where designation = '${searchData}';
+    `;
+    const searchget = await pool.request().query(query)
+    res.json(searchget.recordset)
+  }
+  catch(err){
+   console.log(err)
+  }
+});
 
 
 
