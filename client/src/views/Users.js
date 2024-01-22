@@ -29,7 +29,7 @@ const Users = () => {
     else{
       try {
         const res = await axios.post('http://localhost:5001/search', searchCutomerData)
-        setUsers(res.data)
+        setUsers(res.data);
       } catch(err)
       {
         console.log(err)
@@ -39,7 +39,7 @@ const Users = () => {
 
   
 
-  const clearSearch = async() => {
+  const clearSearch = async () => {
     try{
         const res = await axios.get('http://localhost:5000/customer')
         setUsers(res.data)
@@ -57,7 +57,7 @@ const Users = () => {
         <Searchbar
           placeholder='customer' 
           name='searchCustomer' 
-          value={ setSearchCustomerData.searchCustomer } 
+          value={ searchCutomerData.searchCustomer } 
           onChange={ handleChange } 
           onClick={ searchData } 
           onClickClear={ clearSearch }

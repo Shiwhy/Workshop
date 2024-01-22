@@ -3,9 +3,10 @@ import axios from 'axios'
 
 
 import {TbTruckDelivery} from 'react-icons/tb'
+import Searchbar from '../Utils/Searchbar'
 const Delivery = () => {
 
-  const [delivery,setdelivery] = useState([])
+  const [delivery, setdelivery] = useState([])
 
   useEffect (() => {
     axios.get('http://localhost:5000/vehicle/pending/delivery')
@@ -14,10 +15,31 @@ const Delivery = () => {
     })
   }, []);
 
+  const handleChange = (e) => {
+    setSearchDelivery({...searchDelivery, [e.target.name]:e.target.value});
+  }
 
-  
+  const [searchDelivery, setSearchDelivery] = useState({ pendingdelivery: '' });
 
-  
+  const searchData = async () => {
+    try {
+      const res = await axios.post('http://localhost:5001/search', searchDelivery)
+      setdelivery(res.data)
+    } catch(err)
+    {
+      console.log(err)
+    }
+  }
+
+  const clearSearch = async () => {
+    try{
+        const res = await axios.get('http://localhost:5000/vehicle/pending/delivery')
+        setdelivery(res.data)
+        searchDelivery({ pendingdelivery: '' })
+    }catch(err){
+      console.log(err)
+    }
+  }
 
 
   return (
@@ -25,6 +47,16 @@ const Delivery = () => {
     <div className="heading-div">
       <p className="heading">< TbTruckDelivery/> Delivery</p>
 
+      <abbr title="Search customerName">
+        <Searchbar
+          placeholder= 'delivery'
+          name= 'pendingdelivery'
+          value = { searchDelivery.pendingdelivery }
+          onChange ={ handleChange }
+          onClick={ searchData }
+          onClickClear= { clearSearch }
+        />
+      </abbr>
 
     </div>
     <div className="mainDivision">

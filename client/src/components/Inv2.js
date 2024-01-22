@@ -6,9 +6,13 @@ import { BiSave } from 'react-icons/bi';
 import { RiDeleteBinLine } from 'react-icons/ri'
 import Navbar from './Navbar';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 const Inv2 = () => {
+
+  const navigate = useNavigate()
+
   const [rows, setRows] = useState([{ description: '', quantity: 0, unit_price: 0, amount: 0 }]);
   const [total, setTotal] = useState(0);
 
@@ -46,14 +50,30 @@ const Inv2 = () => {
     setTotal(newTotal);
   };
 
+  const [invVehiclePlate, setInvVehiclePlate] = useState('');
+  const [invDate, setInvDate] = useState('');
+  const [invCustomer, setInvCustomer] = useState('');
 
   const saveinv = async() => {
-    try{
-      await axios.post('http://localhost:5001/payment3', { rows, total }, {
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }catch(err){
-      console.log(err);
+    if(!invVehiclePlate || !invCustomer || !invDate) {
+      alert('All fields are mendatory')
+    }
+    else {
+      try{
+        const res = await axios.post('http://localhost:5001/payment3', { rows, total, invVehiclePlate, invDate, invCustomer }, {
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .catch(
+          alert('Error')
+        )
+  
+        if(res.status === 200) {
+          alert('Invoice Added');
+        }
+      }
+      catch(err){
+        console.log(err);
+      }
     }
   }
 
@@ -62,11 +82,13 @@ const Inv2 = () => {
     <Navbar/>
 
     <div className="invoice">
-      <div className="container">
+      <div className="container headCon">
         <h1 className="invoice-title">
           <LiaFileInvoiceDollarSolid/> Invoice
         </h1>
+        <button className="showInvoiceButton savebtn" onClick={() => navigate('/invoiceview')}>Show Invoices</button>
       </div>
+
 
       <div className="container invoice-box">
         <div className="row">
@@ -74,7 +96,7 @@ const Inv2 = () => {
             <div className="invoice-head">
               <h4>Garage Name</h4>
               <p className='head-text'>
-                Garage Street Address, City, State, Postal Code. <br />
+                Garage Street, City, State, Postal Code. <br />
                 +91 987654321 <br />
                 garage@gmail.com
               </p>
@@ -86,6 +108,8 @@ const Inv2 = () => {
               <input 
                 type="date" 
                 name='date' 
+                value={invDate}
+                onChange={ (e) => setInvDate(e.target.value) }
               /> 
                         <br />
           </div>
@@ -102,6 +126,8 @@ const Inv2 = () => {
                 <span>Customer : </span> &nbsp;
                   <input type="text" 
                     name='customer'
+                    value={invCustomer}
+                    onChange={ (e) => setInvCustomer(e.target.value) }
                   /> 
                   
                   <br /><br />
@@ -111,18 +137,20 @@ const Inv2 = () => {
                 <span>Vehicle Plate_no : </span> &nbsp;
                   <input type=" text" 
                     name='plate'
-                  />     
+                    value={invVehiclePlate}
+                    onChange={(e) => setInvVehiclePlate(e.target.value)}
+                  /> *    
 
               </div>
 
-              <div className="col">
+              {/* <div className="col">
                 <span>Invoice Number : </span> &nbsp;
                   <input type="text" 
                   /> 
                   
                   <br /><br />
 
-              </div>
+              </div> */}
 
 
             </div>

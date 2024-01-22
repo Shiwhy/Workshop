@@ -9,7 +9,7 @@ import Home from './components/Home';
 import About from './components/About';
 import Jobcard from './components/Jobcard';
  import Dashboard from './components/Dashboard';
-import Invoice from './components/Invoice';
+// import Invoice from './components/Invoice';
 import Landing from './components/Landing';
 import Vehicle from './views/Vehicle';
 import Users from './views/Users';
@@ -31,11 +31,14 @@ import Inv from './components/Inv';
 import Inv2 from './components/Inv2';
 import ForgetPass from './components/ForgetPass';
 import Invoice2 from './components/Asdf';
+import InvoiceView from './views/InvoiceView';
+import InvoiceDetailsView from './views/InvoiceDetailsView';
 
 
 // ---- x Components x ----
 
 function App() {
+  
   return (
     <div className="App">
       <Router>
@@ -51,8 +54,8 @@ function App() {
             <Route path='/invoice' element={<Inv2 />} />
             <Route path='/forgetpassword' element={ <ForgetPass/> } />
 
-            <Route path='/inv' element={ <Inv/> } />
-            <Route path='/inv2' element={ <Inv2/> } />
+            {/* <Route path='/inv' element={ <Inv/> } />
+            <Route path='/inv2' element={ <Inv2/> } /> */}
 
             {/* views */}
             <Route path='/vehicleview' element={<Vehicle/>} /> 
@@ -67,6 +70,8 @@ function App() {
             {/* <Route path='/addemp' element={<AddEmp/>} />  */}
             <Route path='/searchbar' element={<Searchbar/>}/>
             <Route path='/searchResult' element={<SearchResult/>} />
+            <Route path='/invoiceview' element={ <InvoiceView/> } />
+            <Route path='/invoicedetailsview' element={ <InvoiceDetailsView/> } />
 
             <Route path='/addemp' element={<AddEmp/>} />
             <Route path='/addparts' element={<AddParts/>} />

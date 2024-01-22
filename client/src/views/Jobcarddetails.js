@@ -30,7 +30,7 @@ const Jobcarddetails = () => {
     }
   }
 
-  const clearSearch = async() => {
+  const clearSearch = async () => {
     try{
         const res = await axios.get('http://localhost:5000/jobcard')
         setjobcard(res.data)
@@ -38,6 +38,22 @@ const Jobcarddetails = () => {
     }catch(err){
       console.log(err)
     }
+  }
+
+  const [updateJobcardStatus, setUpdateJobcardStatus] = useState({ jobcardStatus:'' });
+  
+
+  const updateJobcard = async(registrationNo) => {
+    try{
+      const res = await axios.post('http://localhost:5001/updateStatus', {updateJobcardStatus, registrationNo})
+      if(res.status===200){
+        alert('Status updated! Please refresh')
+      }
+    }catch(err)
+    {
+      console.log(err)
+    }
+
   }
 
 
@@ -86,11 +102,21 @@ const Jobcarddetails = () => {
               <span>Payment Status:&nbsp; </span> {jobcard.paymentStatus}
             </p>
             <p>
-              <span>Invoice name :&nbsp; </span> {jobcard.invoice_no}
+              <span>Invoice name :&nbsp; </span> {jobcard.invoice_name}
             </p>
             <p>
               <span>Estimate :&nbsp; </span> {jobcard.est_date}
             </p>
+
+            <div className="updateStatus">
+              <span>Update Status :&nbsp; </span>
+              <select name='updateJobcardStatus' value={updateJobcardStatus.jobcardStatus} onChange={(e) => setUpdateJobcardStatus(e.target.value)}>
+                <option value="">select</option>
+                <option value="2">InComplete</option>
+                <option value="1">Complete</option>
+              </select>
+              <button onClick={() => updateJobcard(jobcard.registration_no) }>Change</button>
+            </div>
           </div>
         </div>
       })}

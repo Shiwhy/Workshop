@@ -40,8 +40,6 @@ const Employee = () => {
     }
   }
 
-  
-
   const clearSearch = async() => {
     try{
         const res = await axios.get('http://localhost:5000/employee')
@@ -50,7 +48,6 @@ const Employee = () => {
     }catch(err){
       console.log(err)
     }
-
   }
 
   return (

@@ -37,14 +37,13 @@ const Vehicle = () => {
       }
     }
   }
-
   
 
   const clearSearch = async() => {
     try{
         const res = await axios.get('http://localhost:5000/vehicle')
         setVehicle(res.data)
-        setSearchVehicleData({ searchVehicle: '' })
+        setSearchVehicleData({ searchVehicle:'' })
     }catch(err){
       console.log(err)
     }
@@ -80,7 +79,7 @@ const Vehicle = () => {
             <p><span>fuel: </span> {vehicle.fuel_name}</p>
             <p><span>KM: </span> {vehicle.KMs}</p>
             <p><span>Customer: </span> {vehicle.customer_name}</p>
-            <p><span>Vehicle: </span> {vehicle.value}</p>
+            <p><span>Vehicle Status: </span> {vehicle.value}</p>
           </div>
         </div>
 

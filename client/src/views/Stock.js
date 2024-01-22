@@ -1,6 +1,8 @@
 import React,{useEffect,useState} from 'react'
 import axios from 'axios'
-import '../css/views_css/addstock.css'
+import '../css/views_css/addstock.css';
+import Searchbar from '../Utils/Searchbar';
+
 // import Searchbar from '../Utils/Searchbar';
 // import { FiPlus } from "react-icons/fi";
 
@@ -25,24 +27,11 @@ const Stock = () => {
 
   }
   const [partData, setPartData] = useState(part)
-  
-
-
 
   const [showInput, setShowInput] = useState({});
   const handleUnitInput = (partId, partName) => {
     setShowInput((prev) => ({  [partId]: !prev[partId] }));
   };
-
-  // const handleUnitInput = () => {
-  //   if(unitInput.style.display === 'none') {
-  //     unitInput.style.display = 'block';
-  //   } else {
-  //     unitInput.style.display = 'none'
-  //   }
-  // }
-
-
 
   const showMenu = () => {
     var addpart = document.getElementById('addpartView');
@@ -53,7 +42,7 @@ const Stock = () => {
       btntext.innerHTML = 'Close Menu'
     }else{
       addpart.style.display = 'none';
-      btntext.innerHTML = 'Add Part';
+      btntext.innerHTML = 'Add New Part';
     }
   }
 
@@ -63,7 +52,7 @@ const Stock = () => {
         headers:{ 
           "Content-Type":"application/json"
         }
-      })
+      });
     }catch(err){
         console.log(err)
       }
@@ -71,14 +60,18 @@ const Stock = () => {
     // const partName = stock.find((part_Name) => {return part_Name.part_name})
     // console.log(partName)
 
-    
+    const [searchPartData, setSeacrhPartData] = useState({ searchPart:'' })
 
   
-  const [addUnit, setAddUnit] = useState({ addunit: ''})
+  const [addUnit, setAddUnit] = useState('')
   
-  const handleAddUnit = async (partId, partName) => {
+  const handleAddUnit = async (partName) => {
     try {
-      await axios.post('http://localhost:5001/addPartUnit', {addUnit, partName});
+      const res = await axios.post('http://localhost:5001/addPartUnit', { addUnit, partName });
+      if(res.status === 200)
+      {
+        alert('Part Added! Please Refresh');
+      }
     }catch(err)
     {
       console.log(err)
@@ -86,17 +79,45 @@ const Stock = () => {
   }
   
   const handleChange = (e) => {
-    setPartData({...partData,[e.target.name]:e.target.value})
+    setPartData({...partData,[e.target.name]:e.target.value});
+    setSeacrhPartData({ ...searchPartData, [e.target.name]:e.target.value })
+  }
+
+  const searchData = async() => {
+    try {
+      const res = await axios.post('http://localhost:5001/search', searchPartData)
+      setstock(res.data)
+    } catch(err)
+    {
+      console.log(err)
+    }
+  }
+
+  const clearSearch = async() => {
+    try{
+        const res = await axios.get('http://localhost:5000/parts')
+        setstock(res.data)
+        searchPartData({ searchPart: '' })
+    }catch(err){
+      console.log(err)
+    }
+
   }
 
   
   return (
     <>
-
-
-
     <div className="heading-div">
       <p className="heading"><TbSettingsCog/> Stock</p>
+
+      <Searchbar
+        placeholder = 'stock'
+        name= 'searchPart'
+        onClick = { searchData }
+        onChange = { handleChange }
+        onClickClear= { clearSearch }
+      />
+
       <button id='addpartmenuBtn' onClick={showMenu}>Add New Part</button>
     </div>
 
@@ -124,7 +145,7 @@ const Stock = () => {
       </table>
 
       <div className="partbtn">
-        <button className='addpartbtn' onClick={addPart}>Add</button> 
+        <button className='addpartbtn' onClick={ addPart }>Add</button> 
         <p id='error'></p>
 
       </div>
@@ -155,8 +176,8 @@ const Stock = () => {
 
                 {showInput[parts.part_id] && (
                   <div className="unitinput" id={`unitinput_${parts.part_id}`}>
-                    <input type="number" name='addunit' value={ addUnit.addunit } onChange={ (e) => setAddUnit({...addUnit,[e.target.name]:e.target.value}) } />
-                    <button className="unitbtnPlus" onClick={ () => handleAddUnit(parts.part_id, alert(parts.partName)) }>ADD</button>
+                    <input type="number" name='addunit' value={ addUnit } onChange={ (e) => setAddUnit(e.target.value) } />
+                    <button className="unitbtnPlus" onClick={ () => handleAddUnit(parts.part_name) }>ADD</button>
                   </div>
                 )}
 

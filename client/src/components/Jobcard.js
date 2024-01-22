@@ -12,7 +12,7 @@ export default function Jobcard() {
     vehType: '', fuel: '', company: '', model: '', plate: '', kms: '', vehicleStatus: '', serviceDate: '',    // vehicle
     empid: '', empName: '', empContact: '',     // employee
     complains: '', reqService: '', compStatus: '',      // complain
-    paymentMethod: '', paymentStatus: '', amount: '',     // payment
+    paymentStatus: '', payDate:'',     // payment
     parts: '',      //parts
     jobcardStatus: '' //jobcrd
   }
@@ -51,6 +51,9 @@ export default function Jobcard() {
         fillInput.style.display = 'none';
       }, 5000);
     } 
+    else if(jobcardData.plate.includes(' ') || jobcardData.plate.includes('  ')) {
+      alert('no space allowed in number plate')
+    }
     else {
       try{
 
@@ -129,7 +132,7 @@ export default function Jobcard() {
                 type="text"
                 name='name'
                 value={jobcardData.name}
-                onChange={handleChange}
+                onChange={handleChange} 
               /> 
 
               <span>Contact :</span> 
@@ -339,13 +342,21 @@ export default function Jobcard() {
               <div className="col">
                 <h6>Payment</h6>
 
-                <span>Method :</span>
+                {/* <span>Method :</span>
                   <select id='pymentDD' name='paymentMethod' value={jobcardData.paymentMethod} onChange={handleChange}>
                     <option value="">Select Method</option>
                     <option value="Cash">Cash</option>
                     <option value="Cheque">Cheque</option>
-                  </select>
+                  </select> */}
 
+                <span>Payment Date :</span> 
+                  <input 
+                    type="date" 
+                    name='payDate'
+                    value={jobcardData.payDate}
+                    onChange={handleChange}
+                  />
+{/* 
                 <span>Amount :</span> 
                   <input 
                     type="number" 
@@ -353,7 +364,7 @@ export default function Jobcard() {
                     placeholder='only numbers'
                     value={jobcardData.amount}
                     onChange={handleChange}
-                  />
+                  /> */}
                   
                 <span>Status :</span> 
                   <select name='paymentStatus' value={jobcardData.paymentStatus} onChange={handleChange}>
@@ -365,7 +376,7 @@ export default function Jobcard() {
             </div>
           </div>
           <button onClick={addJobcardData} className='savebtn'><BiSave/> Save</button>
-          <p id="fillInput">Please fill all the fields</p>
+          <p id="fillInput"></p>
 
           <div className="jobcard-status">
             <span>Jobcard Status : &nbsp;</span>

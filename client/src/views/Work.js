@@ -1,23 +1,76 @@
 import React,{useEffect,useState} from 'react'
-import axios from 'axios'
+import axios from 'axios';
 import Searchbar from '../Utils/Searchbar';
 
 import {MdPendingActions} from 'react-icons/md';
 
 const Work = () => {
 
-  const [work,setwork] = useState([])
+  const [work, setwork] = useState([])
+  const [updateWork, setUpdateWork] = useState({ updateWorkStatus: '' })
 
   useEffect (() => {
     axios.get('http://localhost:5000/vehicle/pending/getwork')
     .then((res) => {
       setwork(res.data);
     })
-  }, [])
+  }, []);
+
+  const updateStatus = async (registrationNo) => {
+    console.log(updateWork)
+    try {
+      const res = await axios.post('http://localhost:5001/updateStatus', {updateWork, registrationNo}, {
+        headers:{ "Content-Type":"application/json" }
+      })
+      if(res.status=== 200)
+      {
+        alert('status updated! Please Refresh')
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const [searchWorkData, setSearchWorkData] = useState({ searchPendingWork:'' })
+
+  const handleChange = (e) => {
+    setSearchWorkData({...searchWorkData, [e.target.name]:e.target.value});
+  }
+
+  const searchData = async () => {
+    try {
+      const res = await axios.post('http://localhost:5001/search', searchWorkData)
+      setwork(res.data)
+    } catch(err)
+    {
+      console.log(err)
+    }
+  }
+
+  const clearSearch = async() => {
+    try{
+      const res = await axios.get('http://localhost:5000/vehicle/pending/getwork')
+      setwork(res.data)
+      setSearchWorkData({ searchPendingWork: '' })
+  }catch(err){
+    console.log(err)
+  }
+  }
+
+
   return (
     <>
     <div className="heading-div">
       <p className="heading"><MdPendingActions/>  Pending Work</p>
+
+      <Searchbar
+        placeholder = 'work'
+        name= 'searchPendingWork'
+        value= { searchWorkData.searchPendingWork }
+        onClick= { searchData }
+        onClickClear = { clearSearch }
+        onChange = { handleChange }
+      />
     </div>
     
     <div className="mainDivision">
@@ -44,11 +97,26 @@ const Work = () => {
               <span>Customer :&nbsp; </span>{pendingWork.customer_name}
             </p>
             <p>
-              <span>Status :&nbsp; </span>{pendingWork.value}
+              <span>Vehicle Status :&nbsp; </span>{pendingWork.value}
             </p>
+
+            <div className="updateStatus">
+              <span>Update Status :&nbsp; </span>
+              <select name='updateWorkStatus' value={updateWork.updateWorkStatus} onChange={ (e) => setUpdateWork(e.target.value) }>
+                <option value="">select</option>
+                <option value="4">Pending</option>
+                <option value="2">In-Work</option>
+                <option value="1">Completed</option>
+                <option value="3">Delivered</option>
+                 
+              </select>
+              <button onClick={() => updateStatus(pendingWork.registration_no)}>Change</button>
+            </div>
           </div>
         </div>
       })}
+
+
     </div>
     </>
   )

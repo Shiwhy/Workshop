@@ -140,3 +140,12 @@
   color: #000;
 
 }
+
+.invoice .headCon  {
+  display: flex;
+  justify-content: space-between;
+}
+
+.invoice .headCon .showInvoiceButton {
+  height: 5vh;
+}
