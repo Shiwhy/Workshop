@@ -27,6 +27,9 @@ pool.connect().then(() => {
   console.error('Error connecting to SQL Server:', err);
 });
 
+// const pool = new sql.ConnectionPool(config);
+// const poolConnect = pool.connect().then(console.log('connected'));
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors())
@@ -114,7 +117,7 @@ app.get('/vehicle/pending/delivery', async (req,res) => {
       join customer on vehicle.customer_id = customer.customer_id
       join vehicle_status on vehicle_status.status_id = vehicle.vehicle_status
       where vehicle_status = 1;
-    `;
+      `;
     const result = await pool.request().query(query)
     res.json(result.recordset)
   }catch(err){
@@ -297,26 +300,8 @@ app.get('/payment', async (req, res) => {
         join payment_status on payment_status.status_id = payment.payment_status
         join customer on customer.customer_id = payment.customer_id
         join vehicle on vehicle.vehicle_id = payment.vehicle_id 
-      where payment.payment_status = 2;
-    `;
-    // select payment.payment_id,
-    //   payment_status.value, 
-    //   payment.payment_type, 
-    //   payment.amount,
-    //   payment.bank_acc,
-    //   payment.ack_no,
-    //   payment.payment_date,
-    //   payment.invoice_id,
-    //   payment.invoice_name,
-    //   payment.invoice_no,
-    //   invoice_status.inv_value, 
-    //   customer.customer_name, 
-    //   vehicle.vehicle_model 
-    // from payment
-    // join payment_status on payment_status.status_id = payment.payment_status
-    // join invoice_status on invoice_status.status_id = payment.invoice_status
-    // join customer on customer.customer_id = payment.customer_id
-    // join vehicle on vehicle.vehicle_id = payment.vehicle_id
+        `;
+        // where payment.payment_status = 2;
     const result = await pool.request().query(query)
     res.json(result.recordset)
   } catch(err) {
@@ -398,6 +383,75 @@ app.get('/search', async (req,res) => {
   }
   catch(err){
    console.log(err)
+  }
+});
+
+
+app.get('/paymentStatus', async (req, res) => {
+  try {
+    const invoiceStatusQuery = `
+      select invoice_status as invoiceStatus from payment where invoice_status = 1;
+    `;
+    const invoiceStatusQueryResult = await pool.request().query(invoiceStatusQuery)
+    res.json(invoiceStatusQueryResult.recordset)
+
+  } catch (err) {
+    console.log(err)
+  }
+});
+
+
+app.get('/generatedInvoices', async(req, res) => {
+  try{
+    const generatedInvoices = `
+        select 
+          payment.amount,
+          payment_status.value as paymentStatus,
+          payment.payment_date,
+          payment.invoice_name,
+          payment.invoice_no,
+          payment.invoice_date,
+          invoice_status.inv_value as invoiceStatus,
+          customer.customer_name,
+          vehicle.registration_no
+      from payment
+      join invoice_status on invoice_status.status_id = payment.invoice_status
+      join payment_status on payment_status.status_id = payment.payment_status
+      join customer on customer.customer_id = payment.customer_id
+      join vehicle on vehicle.vehicle_id = payment.vehicle_id
+    `;
+    const generatedInvoicesResult = await pool.request().query(generatedInvoices)
+    res.json(generatedInvoicesResult.recordset)
+
+  }
+  catch(err){
+    console.log(err)
+  }
+
+})
+
+
+app.get('/invoiceDetails', async (req,res) => {
+  try {
+    
+    await poolConnect;
+  
+    const invoiceNo = req.body;
+  
+    const num = Object.keys(invoiceNo);
+    console.log(num)
+    
+    const invoiceDetailsQuery = `
+      select * from [invoiceDetails]
+      where invoice_no = '${invoiceNo}'
+    `;
+    const invoiceDetailsQueryResult = await pool.request().query(invoiceDetailsQuery);
+    const invoiceDetailsResult = invoiceDetailsQueryResult.recordset;
+    console.log(invoiceDetailsResult)
+    res.send(invoiceDetailsQueryResult);
+    
+  } catch (err) {
+    console.log(err)
   }
 });
 

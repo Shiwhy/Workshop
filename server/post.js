@@ -105,9 +105,8 @@ app.post('/jobcard', async (req,res) => {
       name, contact, email, address, custStatus, empid,
       vehType, fuel, company, model, plate, kms, vehicleStatus,serviceDate, 
       complains, reqService, compStatus, 
-      paymentStatus, paymentMethod, amount, 
+      paymentStatus, payDate, 
       parts, jobcardStatus,
-      invPrice, invAmount, invQuantity, invParts
     } = req.body;
 
     const customer = `
@@ -143,9 +142,9 @@ app.post('/jobcard', async (req,res) => {
     const complain_id = complainResult.recordset[0].complain_id;
 
     const payment = `
-      insert into payment ( payment_status, payment_type, amount, customer_id, vehicle_id )
+      insert into payment ( payment_status, customer_id, vehicle_id, payment_date, invoice_status )
       output inserted.payment_id
-      values ( '${paymentStatus}', '${paymentMethod}', '${amount}', '${customer_id}', '${vehicle_id}' );
+      values ( '${paymentStatus}', '${customer_id}', '${vehicle_id}', '${payDate}', 2 );
     `;
     const paymentResult = await pool.request().query(payment);
     const payment_id = paymentResult.recordset[0].payment_id;
@@ -165,32 +164,31 @@ app.post('/jobcard', async (req,res) => {
       set jobcard_id = '${jobcard_id}' 
       where est_id = '${est_id}'
     `;
-    await pool.request().query(updateEst);
+    const updatedEstimate = await pool.request().query(updateEst);
 
     res.status(200).json({ message:'Jobcard added' })
 
-
   }catch(err){
     console.log(err)
   }
 });
 
-app.post('/payment', async(req, res) => {
-  try{ 
-    await poolConnect;
-    const { invDescription, invQuantity, invUnitPrice, invAmount, invTotal } = req.body;
+// app.post('/payment', async(req, res) => {
+//   try{ 
+//     await poolConnect;
+//     const { invDescription, invQuantity, invUnitPrice, invAmount, invTotal } = req.body;
 
-    const invoiceQuery = `
-      insert into invoice ( description, qunatity, unit_price, amount, total )
-      values ( '${invDescription}', '${invQuantity}', '${invUnitPrice}', '${invAmount}', '${invTotal}' );
-    `;
+//     const invoiceQuery = `
+//       insert into invoice ( description, qunatity, unit_price, amount, total )
+//       values ( '${invDescription}', '${invQuantity}', '${invUnitPrice}', '${invAmount}', '${invTotal}' );
+//     `;
 
-    await pool.request().query(invoiceQuery);
+//     await pool.request().query(invoiceQuery);
 
-  }catch(err){
-    console.log(err)
-  }
-});
+//   }catch(err){
+//     console.log(err)
+//   }
+// });
 
 
 
@@ -259,19 +257,26 @@ app.post('/addpart', async (req,res) => {
 //add part units into databse
 app.post('/addPartUnit', async(req, res) => {
   await poolConnect;
-  const{ addunit, partName } = req.body;
+  const{ addUnit, partName } = req.body;
 
-  const query = `
-    update parts
-    set units = '${addunit}'
+  // console.log(addUnit);
+  // console.log(partName);
+
+  const currentValue = `
+    select units from parts
     where part_name = '${partName}'
   `;
-  // await pool.request().query(query)
-  await pool.request()
-      .input('addunit', sql.Int, addunit) // Specify the SQL data type as Int
-      .input('partName', sql.VarChar, partName) // Assuming partName is of type VARCHAR
-      .query(query);
-})
+  const value = await pool.request().query(currentValue);
+  const existingValue = value.recordset[0].units
+
+  const addUnitQuery = `
+    update parts 
+    set units = ${existingValue} + ${addUnit}
+    where part_name = '${partName}'
+  `;
+  await pool.request().query(addUnitQuery)
+  return res.status(200).json({message: 'part added'})
+});
 
 
 //searchbar
@@ -279,12 +284,12 @@ app.post('/search', async (req,res) => {
   try {
     
     await poolConnect;
-    const{ searchEmp, searchVehicle, searchCustomer, searchJobcard } = req.body;
+    const{ searchEmp, searchVehicle, searchCustomer, searchJobcard, pendingdelivery, searchPart, searchPayment, searchPendingWork, searchInvoice } = req.body;
   
     
     if(searchEmp) {
       const query = `
-        select * from employee where emp_name = '${searchEmp}' or designation='${searchEmp}';
+        select * from employee where emp_name = '${searchEmp}' or designation='${searchEmp}' or contact='${searchEmp}' 
       `;
       const result = await pool.request().query(query)
       res.json(result.recordset);
@@ -312,14 +317,21 @@ app.post('/search', async (req,res) => {
     }
     else if (searchCustomer) {
       const searchCustomerQuery = `
-        select customer.*,
-          vehicle.vehicle_model,
-          vehicle.registration_no,
-          vehicle_status.value
-        from customer
-        join vehicle on vehicle.vehicle_id = customer.customer_id
-        join vehicle_status on vehicle_status.status_id = vehicle.vehicle_status 
-        where customer_name = '${searchCustomer}'
+        select customer.customer_name,
+            customer.contact,
+            customer.Address,
+            customer.email,
+            customer_status.value as customerStatus,
+            vehicle.vehicle_model,
+            vehicle_status.value,
+            vehicle.registration_no
+          from customer
+          join vehicle on vehicle.customer_id = customer.customer_id
+          join customer_status on customer_status.status_id = customer.customer_status
+          join vehicle_status on vehicle_status.status_id = vehicle.vehicle_status
+          where customer.customer_name = '${searchCustomer}' or contact = '${searchCustomer}' or
+          email = '${searchCustomer}' or vehicle_model = '${searchCustomer}' or
+          registration_no = '${searchCustomer}'
       `;
       const customerResult = await pool.request().query(searchCustomerQuery)
       res.json(customerResult.recordset)
@@ -348,11 +360,109 @@ app.post('/search', async (req,res) => {
         join payment on payment.payment_id = jobcard.payment_id
         join estimate on estimate.jobcard_id = jobcard.jobcard_id
         join payment_status on payment_status.status_id = payment.payment_status 
-        where customer_name = '${searchJobcard}' or emp_name = '${searchJobcard}' or
-              registration_no = '${searchJobcard}' or jobcard_date = '${searchJobcard}'
+        where customer_name = '${searchJobcard}' or jobcard.jobcard_date = '${searchJobcard}' or
+        jobcard_status.value = '${searchJobcard}' or vehicle.registration_no = '${searchJobcard}' or 
+        payment_status.value = '${searchJobcard}' or vehicle.vehicle_model = '${searchJobcard}' or 
+        employee.emp_name = '${searchJobcard}' or estimate.est_date = '${searchJobcard}' 
       `;
       const jobcardResult = await pool.request().query(searchJobcardQuery)
       res.json(jobcardResult.recordset)
+    }
+    else if (pendingdelivery) {
+      const searchDeliveryquery = `
+        select vehicle.vehicle_type,
+            vehicle_company.company_name,
+            vehicle.vehicle_model,
+            customer.customer_name,
+            vehicle.KMs,
+            fuel.fuel_name,
+            vehicle_status.value,
+            vehicle.registration_no
+        from vehicle
+        join customer on customer.customer_id = vehicle.customer_id
+        join vehicle_status on vehicle_status.status_id = vehicle.vehicle_status
+        join vehicle_company on vehicle_company.company_id = vehicle.company
+        join fuel on fuel.fuel_id = vehicle.fuel_type
+        where vehicle.vehicle_model = '${pendingdelivery}' or vehicle.registration_no = '${pendingdelivery}' or
+              customer.customer_name = '${pendingdelivery}' or vehicle_company.company_name = '${pendingdelivery}'
+      `;
+      const deliveryResult = await pool.request().query(searchDeliveryquery)
+      res.json(deliveryResult.recordset)
+    } 
+    else if (searchPart) {
+      const searchPartQuery = `
+        select * from parts where part_name = '${searchPart}'
+      `; 
+      const searchPartQueryResult = await pool.request().query(searchPartQuery)
+      console.log(searchPartQueryResult)
+      res.json(searchPartQueryResult.recordset)
+    }
+    else if (searchPayment) {
+      const searchPaymentQuery = `
+        select payment.payment_id,
+          payment_status.value as paymentStatus,
+          payment.amount,
+          customer.customer_name,
+          customer.contact,
+          vehicle.registration_no,
+          vehicle.vehicle_model
+        from payment
+        join payment_status on payment_status.status_id = payment.payment_status
+        join customer on customer.customer_id = payment.customer_id
+        join vehicle on vehicle.vehicle_id = payment.vehicle_id 
+        where payment_status.value = '${searchPayment}' or customer.customer_name = '${searchPayment}' or
+              vehicle.registration_no = '${searchPayment}' ;
+      `;
+      const searchPaymentQueryResult = await pool.request().query(searchPaymentQuery);
+      res.json(searchPaymentQueryResult.recordset)
+    }
+    else if (searchPendingWork) {
+      const searchWorkQuery = `
+        select vehicle.vehicle_id,
+          vehicle.vehicle_type,
+          vehicle_company.company_name,
+          vehicle.vehicle_model,
+          fuel.fuel_name,
+          vehicle.registration_no,
+          vehicle.KMs,
+          customer.customer_name,
+          vehicle_status.value
+        from vehicle 
+        join vehicle_company on vehicle.company = vehicle_company.company_id
+        join fuel on vehicle.fuel_type = fuel.fuel_id
+        join customer on vehicle.customer_id = customer.customer_id
+        join vehicle_status on vehicle_status.status_id = vehicle.vehicle_status
+        where vehicle_company.company_name = '${searchPendingWork}' or vehicle.vehicle_type = '${searchPendingWork}' or
+              vehicle.vehicle_model = '${searchPendingWork}' or fuel.fuel_name = '${searchPendingWork}' or
+              vehicle.registration_no = '${searchPendingWork}' or customer.customer_name = '${searchPendingWork}' or
+              vehicle_status.value = '${searchPendingWork}' 
+        and vehicle_status in (2,4);
+      `;
+      const searchWorkQueryResult = await pool.request().query(searchWorkQuery)
+      res.json(searchWorkQueryResult.recordset)
+    }
+    else if (searchInvoice) {
+      const searchInvoiceQuery = `
+        select 
+          payment.amount,
+          payment_status.value as paymentStatus,
+          payment.payment_date,
+          payment.invoice_name,
+          payment.invoice_no,
+          payment.invoice_date,
+          invoice_status.inv_value as invoiceStatus,
+          customer.customer_name,
+          vehicle.registration_no
+        from payment
+        join invoice_status on invoice_status.status_id = payment.invoice_status
+        join payment_status on payment_status.status_id = payment.payment_status
+        join customer on customer.customer_id = payment.customer_id
+        join vehicle on vehicle.vehicle_id = payment.vehicle_id
+        where payment_status.value = '${searchInvoice}' or customer.customer_name = '${searchInvoice}' 
+        or payment.payment_date = '${searchInvoice}' or  invoice_status.inv_value = '${searchInvoice}'
+      `;
+      const searchInvoiceQueryResult = await pool.request().query(searchInvoiceQuery)
+      res.json(searchInvoiceQueryResult.recordset)
     }
 
   } catch (err) {
@@ -362,112 +472,149 @@ app.post('/search', async (req,res) => {
 });
 
 
-app.post('/payment2', async (req, res) => {
-  try {
-    const { data, total } = req.body;
-
-    // Assuming you have a 'invoices' table with columns: description, quantity, unit_price, amount, total
-    for (const row of data) {
-      const { description, quantity, unit_price, amount } = row;
-
-      const invoiceQuery = `
-        INSERT INTO invoice (description, quantity, unit_price, amount, total)
-        VALUES ('${description}', ${quantity}, ${unit_price}, ${amount}, ${total});
-      `;
-
-      await pool.request().query(invoiceQuery);
-    }
-
-    res.status(200).send('Invoice data saved successfully');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
 app.post('/payment3', async (req, res) => {
-  try {
-    var conn = await poolConnect;
-    if(conn === 'connected') {
-      console.log(conn)
-    } 
-    
-    const { rows, total } = req.body;
+  await poolConnect;
 
-    var Pid = `
-      select max(Payment_ID) as payment_id from payment;
+  const {rows, total, invVehiclePlate, invDate, invCustomer } = req.body;
+
+  const invnoDescQuery = `
+    select max(invoice_no)+1 as invoice_no from description;
+  `;
+  
+  const invnoDescQueryResult = await pool.request().query(invnoDescQuery);
+  const invnoDescResult = invnoDescQueryResult.recordset[0].invoice_no;
+  console.log('InvNO: ', invnoDescResult)
+
+  for (const row of rows) {
+    const invDescriptionQuery = `
+      insert into description ( description, quantity, unit_Price, amount, total, invoice_no )
+      VALUES ('${row.description}', '${row.quantity}', '${row.unit_price}', '${row.amount}', '${total}', '${invnoDescResult}');
     `;
-    const paymentRes = await pool.request().query(Pid)
-    const paymentqueryResult = paymentRes.recordset[0].payment_id;
-
-
-    var Invid = `
-      select max(invoice_no)+1 as invoice_no from payment;
-    `;
-    const invoiceRes = await pool.request().query(Invid)
-    const invqueryResult = invoiceRes.recordset[0].invoice_no;
-
-    console.log(paymentqueryResult)
-    console.log(invqueryResult)
-
-    const invUpdate = `
-      update payment
-      set invoice_no = '${invqueryResult}'
-      where payment_id = '${paymentqueryResult}'
-    `;
-    const invUpdateResult = await pool.request().query(invUpdate);
-
-    const descQuery = `
-      select invoice_no as invoice_no from payment
-      where payment_id = '${paymentqueryResult}'
-    `;
-    const descQueryResult = await pool.request().query(descQuery);
-    const descQueryRecord = descQueryResult.recordset[0].invoice_no
-    console.log(descQueryRecord);
-
-    // console.log(desc)
-    // await pool.request().query(desc)
-
-
-
-    for (const row of rows) {
-      await pool.request().query(`
-        insert into description ( description, quantity, unit_Price, amount, total, invoice_no )
-        VALUES ('${row.description}', '${row.quantity}', '${row.unit_price}', '${row.amount}', '${total}', '${descQueryRecord}');
-      `);
-    }
-
-    // Respond with success
-    res.status(200).json({ message: 'Invoice data saved successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    await pool.request().query(invDescriptionQuery);
   }
+
+  const invVehicleIdQuery = `
+    select vehicle_id from vehicle where registration_no = '${invVehiclePlate}';
+  `;
+  const invVehicleIdQueryResult = await pool.request().query(invVehicleIdQuery);
+  const invVehicleIdResult = invVehicleIdQueryResult.recordset[0].vehicle_id;
+  console.log('vehicleID: ', invVehicleIdResult);
+
+  const updatePayment = `
+    update payment
+    set invoice_no = '${invnoDescResult}', invoice_date = '${invDate}', invoice_name = '${invCustomer}', amount = '${total}'
+    where vehicle_id = '${invVehicleIdResult}'
+  `;
+  await pool.request().query(updatePayment);
+  
+  const paymentStatusUpdate = `
+    update payment
+    set payment_status = 1
+    where vehicle_id = '${invVehicleIdResult}'
+  `
+  await pool.request().query(paymentStatusUpdate);
+
+  const updateInvStatus = `
+    update payment
+    set invoice_status = 1
+    where vehicle_id = '${invVehicleIdResult}'
+  `
+  await pool.request().query(updateInvStatus);
+
+  res.status(200).json({ message: 'Invoice Added' });
+  
 });
 
-// app.post('/payment', async (req, res) => {
-//   try {
-//     // Extracting data from the request body
-//     const { invDescription, invQuantity, invUnitPrice, invAmount, invTotal } = req.body;
+app.post('/updateStatus', async(req, res) => {
 
-//     // Create a connection pool
-//     const pool = await sql.connect(config);
+  await poolConnect;
 
-//     // Insert invoice data into the database
-//     const query = `
-//       INSERT INTO InvoiceTable (Description, Quantity, UnitPrice, Amount, total)
-//       VALUES ('${invDescription}', ${invQuantity}, ${invUnitPrice}, ${invAmount}, ${invTotal});
-//     `;
+  const { updateWork, updatePayStatus, updateJobcardStatus, registrationNo } = req.body;
 
-//     await pool.request().query(query);
+  const vehicleIdQuery = `
+    select vehicle_id from vehicle where registration_no = '${registrationNo}';
+  `;
+  const vehicleIdResult = await pool.request().query(vehicleIdQuery);
+  const vehicleId = vehicleIdResult.recordset[0].vehicle_id
+  console.log(vehicleId)
 
-//     // Respond with success
-//     res.status(200).json({ message: 'Invoice data saved successfully' });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Internal Server Error' });
-//   }
-// });
+  if(updateWork){
+    
+    const updateWorkStatusQuery = `
+      update vehicle
+      set vehicle_status = ${updateWork}
+      where vehicle_id = '${vehicleId}'
+    `;
+    await pool.request().query(updateWorkStatusQuery);
+    return res.status(200).json({ message: 'status updated' })
+  }
+  else if(updatePayStatus) {
+    const updatePayment = `
+      update payment
+      set payment_status = ${updatePayStatus}
+      where vehicle_id = '${vehicleId}'
+    `;
+    await pool.request().query(updatePayment);
+    return res.status(200).json({ message: 'status updated' })
+  }
+  else if(updateJobcardStatus) {
+    const updateJobcardQuery = `
+      update jobcard
+      set jobcard_status = ${updateJobcardStatus}
+      where vehicle_id = '${vehicleId}'
+    `;
+    await pool.request().query(updateJobcardQuery);
+    return res.status(200).json({ message: 'status updated' })
+  }
+
+});
+
+
+app.post('/invoiceDetails', async (req,res) => {
+  await poolConnect;
+
+  const invoiceNo = req.body;
+  const number = invoiceNo[0];
+  console.log(number)
+    
+  const invoiceDetailsQuery = `
+    select * from description
+    where invoice_no = '${invoiceNo}'
+  `;
+  const invoiceDetailsQueryResult = await pool.request().query(invoiceDetailsQuery);
+  const invoiceDetailsResult = invoiceDetailsQueryResult.recordset;
+
+  res.send(invoiceDetailsResult);
+});
+
+app.post('/invoiceSummary', async (req,res) => {
+  await poolConnect;
+
+  const invoiceNo = req.body;
+  const number = invoiceNo[0];
+  console.log(number)
+    
+  const invoiceDetailsQuery = `
+    select * from invoiceSummary
+    where invoice_no = '${invoiceNo}'
+  `;
+  const invoiceDetailsQueryResult = await pool.request().query(invoiceDetailsQuery);
+  const invoiceDetailsResult = invoiceDetailsQueryResult.recordset;
+
+
+
+  res.send(invoiceDetailsResult);
+
+  // const noQuery = `
+  //   select distinct total from description
+  //   where invoice_no = '${invoiceNo}'
+  // `;
+  // const noQueryResult = await pool.request().query(noQuery)
+  // console.log(noQueryResult.recordset[0])
+});
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
